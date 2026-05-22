@@ -373,8 +373,8 @@
     <string name="sandbox_files_editor_open_in_app">Адкрыць у праграме</string>
     <string name="sandbox_files_editor_force_open_as_text">Прымусова адкрыць як тэкст</string>
     <string name="sandbox_files_editor_save">Захаваць</string>
-    <string name="kai_ui_render_failed">Не ўдалося адлюстраваць інтэрфейс</string>
-    <string name="kai_ui_code_copy">Капіяваць</string>
+    <string name="pocketclaw_ui_render_failed">Не ўдалося адлюстраваць інтэрфейс</string>
+    <string name="pocketclaw_ui_code_copy">Капіяваць</string>
     <string name="image_viewer_close">Закрыць</string>
     <string name="bot_message_thinking_label">Разважае</string>
     <string name="bot_message_thinking_expand_content_description">Разгарнуць або згарнуць разважанні</string>

@@ -372,8 +372,8 @@
     <string name="sandbox_files_editor_open_in_app">பயன்பாட்டில் திற</string>
     <string name="sandbox_files_editor_force_open_as_text">உரையாக கட்டாயமாக திற</string>
     <string name="sandbox_files_editor_save">சேமி</string>
-    <string name="kai_ui_render_failed">இடைமுகத்தை வரைய முடியவில்லை</string>
-    <string name="kai_ui_code_copy">நகலெடு</string>
+    <string name="pocketclaw_ui_render_failed">இடைமுகத்தை வரைய முடியவில்லை</string>
+    <string name="pocketclaw_ui_code_copy">நகலெடு</string>
     <string name="image_viewer_close">மூடு</string>
     <string name="bot_message_thinking_label">சிந்தித்தல்</string>
     <string name="bot_message_thinking_expand_content_description">சிந்தனையை விரிவாக்கு அல்லது சுருக்கு</string>

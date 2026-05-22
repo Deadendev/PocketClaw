@@ -372,8 +372,8 @@
     <string name="sandbox_files_editor_open_in_app">Hap në aplikacion</string>
     <string name="sandbox_files_editor_force_open_as_text">Detyro hapjen si tekst</string>
     <string name="sandbox_files_editor_save">Ruaj</string>
-    <string name="kai_ui_render_failed">Dështoi vizatimi i ndërfaqes</string>
-    <string name="kai_ui_code_copy">Kopjo</string>
+    <string name="pocketclaw_ui_render_failed">Dështoi vizatimi i ndërfaqes</string>
+    <string name="pocketclaw_ui_code_copy">Kopjo</string>
     <string name="image_viewer_close">Mbyll</string>
     <string name="bot_message_thinking_label">Të menduarit</string>
     <string name="bot_message_thinking_expand_content_description">Zgjero ose mbledh të menduarit</string>

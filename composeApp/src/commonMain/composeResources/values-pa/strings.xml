@@ -372,8 +372,8 @@
     <string name="sandbox_files_editor_open_in_app">ਐਪ ਵਿੱਚ ਖੋਲ੍ਹੋ</string>
     <string name="sandbox_files_editor_force_open_as_text">ਟੈਕਸਟ ਵਜੋਂ ਜ਼ਬਰਦਸਤੀ ਖੋਲ੍ਹੋ</string>
     <string name="sandbox_files_editor_save">ਸੇਵ ਕਰੋ</string>
-    <string name="kai_ui_render_failed">UI ਰੈਂਡਰ ਕਰਨ ਵਿੱਚ ਅਸਫ਼ਲ</string>
-    <string name="kai_ui_code_copy">ਕਾਪੀ</string>
+    <string name="pocketclaw_ui_render_failed">UI ਰੈਂਡਰ ਕਰਨ ਵਿੱਚ ਅਸਫ਼ਲ</string>
+    <string name="pocketclaw_ui_code_copy">ਕਾਪੀ</string>
     <string name="image_viewer_close">ਬੰਦ ਕਰੋ</string>
     <string name="bot_message_thinking_label">ਸੋਚ ਰਿਹਾ ਹੈ</string>
     <string name="bot_message_thinking_expand_content_description">ਸੋਚ ਨੂੰ ਵਿਸਤਾਰ ਜਾਂ ਸਮੇਟੋ</string>

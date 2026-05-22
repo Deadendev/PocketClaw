@@ -373,8 +373,8 @@ Se qualcosa richiede attenzione (ricordi obsoleti, attività scadute, follow-up 
     <string name="sandbox_files_editor_open_in_app">Apri nell\'app</string>
     <string name="sandbox_files_editor_force_open_as_text">Forza apertura come testo</string>
     <string name="sandbox_files_editor_save">Salva</string>
-    <string name="kai_ui_render_failed">Rendering dell\'interfaccia non riuscito</string>
-    <string name="kai_ui_code_copy">Copia</string>
+    <string name="pocketclaw_ui_render_failed">Rendering dell\'interfaccia non riuscito</string>
+    <string name="pocketclaw_ui_code_copy">Copia</string>
     <string name="image_viewer_close">Chiudi</string>
     <string name="bot_message_thinking_label">Riflessione</string>
     <string name="bot_message_thinking_expand_content_description">Espandi o comprimi la riflessione</string>

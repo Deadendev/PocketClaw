@@ -373,8 +373,8 @@
     <string name="sandbox_files_editor_open_in_app">在应用中打开</string>
     <string name="sandbox_files_editor_force_open_as_text">强制以文本打开</string>
     <string name="sandbox_files_editor_save">保存</string>
-    <string name="kai_ui_render_failed">无法渲染界面</string>
-    <string name="kai_ui_code_copy">复制</string>
+    <string name="pocketclaw_ui_render_failed">无法渲染界面</string>
+    <string name="pocketclaw_ui_code_copy">复制</string>
     <string name="image_viewer_close">关闭</string>
     <string name="bot_message_thinking_label">思考</string>
     <string name="bot_message_thinking_expand_content_description">展开或收起思考</string>

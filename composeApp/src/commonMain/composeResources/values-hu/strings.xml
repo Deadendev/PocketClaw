@@ -372,8 +372,8 @@
     <string name="sandbox_files_editor_open_in_app">Megnyitás alkalmazásban</string>
     <string name="sandbox_files_editor_force_open_as_text">Megnyitás szövegként kényszerítve</string>
     <string name="sandbox_files_editor_save">Mentés</string>
-    <string name="kai_ui_render_failed">A felhasználói felület megjelenítése sikertelen</string>
-    <string name="kai_ui_code_copy">Másolás</string>
+    <string name="pocketclaw_ui_render_failed">A felhasználói felület megjelenítése sikertelen</string>
+    <string name="pocketclaw_ui_code_copy">Másolás</string>
     <string name="image_viewer_close">Bezárás</string>
     <string name="bot_message_thinking_label">Gondolkodás</string>
     <string name="bot_message_thinking_expand_content_description">Gondolkodás kibontása vagy összecsukása</string>

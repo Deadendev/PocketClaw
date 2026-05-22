@@ -373,8 +373,8 @@
     <string name="sandbox_files_editor_open_in_app">অ্যাপে খুলুন</string>
     <string name="sandbox_files_editor_force_open_as_text">টেক্সট হিসেবে খুলতে বাধ্য করুন</string>
     <string name="sandbox_files_editor_save">সংরক্ষণ করুন</string>
-    <string name="kai_ui_render_failed">UI রেন্ডার করা যায়নি</string>
-    <string name="kai_ui_code_copy">কপি</string>
+    <string name="pocketclaw_ui_render_failed">UI রেন্ডার করা যায়নি</string>
+    <string name="pocketclaw_ui_code_copy">কপি</string>
     <string name="image_viewer_close">বন্ধ করুন</string>
     <string name="bot_message_thinking_label">চিন্তা করছে</string>
     <string name="bot_message_thinking_expand_content_description">চিন্তা প্রসারিত বা সঙ্কুচিত করুন</string>

@@ -372,8 +372,8 @@
     <string name="sandbox_files_editor_open_in_app">యాప్‌లో తెరువు</string>
     <string name="sandbox_files_editor_force_open_as_text">టెక్స్ట్‌గా బలవంతంగా తెరువు</string>
     <string name="sandbox_files_editor_save">సేవ్ చేయి</string>
-    <string name="kai_ui_render_failed">UI రెండర్ చేయడం విఫలమైంది</string>
-    <string name="kai_ui_code_copy">కాపీ</string>
+    <string name="pocketclaw_ui_render_failed">UI రెండర్ చేయడం విఫలమైంది</string>
+    <string name="pocketclaw_ui_code_copy">కాపీ</string>
     <string name="image_viewer_close">మూసివేయి</string>
     <string name="bot_message_thinking_label">ఆలోచన</string>
     <string name="bot_message_thinking_expand_content_description">ఆలోచనను విస్తరించు లేదా కుదించు</string>

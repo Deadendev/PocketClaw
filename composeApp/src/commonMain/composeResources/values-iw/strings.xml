@@ -372,8 +372,8 @@
     <string name="sandbox_files_editor_open_in_app">פתח באפליקציה</string>
     <string name="sandbox_files_editor_force_open_as_text">אלץ פתיחה כטקסט</string>
     <string name="sandbox_files_editor_save">שמור</string>
-    <string name="kai_ui_render_failed">הצגת ממשק המשתמש נכשלה</string>
-    <string name="kai_ui_code_copy">העתק</string>
+    <string name="pocketclaw_ui_render_failed">הצגת ממשק המשתמש נכשלה</string>
+    <string name="pocketclaw_ui_code_copy">העתק</string>
     <string name="image_viewer_close">סגור</string>
     <string name="bot_message_thinking_label">חושב</string>
     <string name="bot_message_thinking_expand_content_description">הרחב או כווץ את המחשבה</string>

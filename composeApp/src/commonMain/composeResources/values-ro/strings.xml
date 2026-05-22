@@ -372,8 +372,8 @@
     <string name="sandbox_files_editor_open_in_app">Deschide în aplicație</string>
     <string name="sandbox_files_editor_force_open_as_text">Forțează deschiderea ca text</string>
     <string name="sandbox_files_editor_save">Salvează</string>
-    <string name="kai_ui_render_failed">Randarea interfeței a eșuat</string>
-    <string name="kai_ui_code_copy">Copiază</string>
+    <string name="pocketclaw_ui_render_failed">Randarea interfeței a eșuat</string>
+    <string name="pocketclaw_ui_code_copy">Copiază</string>
     <string name="image_viewer_close">Închide</string>
     <string name="bot_message_thinking_label">Gândire</string>
     <string name="bot_message_thinking_expand_content_description">Extinde sau restrânge gândirea</string>

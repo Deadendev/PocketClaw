@@ -372,8 +372,8 @@
     <string name="sandbox_files_editor_open_in_app">Odpri v aplikaciji</string>
     <string name="sandbox_files_editor_force_open_as_text">Vsili odpiranje kot besedilo</string>
     <string name="sandbox_files_editor_save">Shrani</string>
-    <string name="kai_ui_render_failed">Upodabljanje vmesnika ni uspelo</string>
-    <string name="kai_ui_code_copy">Kopiraj</string>
+    <string name="pocketclaw_ui_render_failed">Upodabljanje vmesnika ni uspelo</string>
+    <string name="pocketclaw_ui_code_copy">Kopiraj</string>
     <string name="image_viewer_close">Zapri</string>
     <string name="bot_message_thinking_label">Razmišljanje</string>
     <string name="bot_message_thinking_expand_content_description">Razširi ali strni razmišljanje</string>
