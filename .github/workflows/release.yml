@@ -66,10 +66,10 @@ jobs:
       - name: Rename asset
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          mv androidApp-foss-release-signed.apk "Kai-${VERSION}-android.apk"
+          mv androidApp-foss-release-signed.apk "PocketClaw-${VERSION}-android.apk"
 
       - name: Create Github Release
         uses: softprops/action-gh-release@v2
         with:
           name: Release ${{ github.ref_name }}
-          files: Kai-*
+          files: PocketClaw-*
