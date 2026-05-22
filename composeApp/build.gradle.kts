@@ -1,7 +1,4 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -35,62 +32,14 @@ kotlin {
         withHostTest {}
     }
 
-    listOf(
-        iosArm64(),
-        iosSimulatorArm64(),
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "ComposeApp"
-            // Dynamic so LiteRT-LM's `-Xlinker -all_load` (in its Package.swift) doesn't
-            // sweep up ComposeApp's static archive too and trip thousands of duplicate
-            // symbols at link time. Each framework gets its own link context.
-            isStatic = false
-            // Must differ from the iosApp bundle identifier — iOS refuses to install a
-            // .app whose embedded framework shares its parent's identifier (MIInstaller
-            // error 57 / DuplicateIdentifier).
-            binaryOption("bundleId", "com.inspiredandroid.kai.composeapp")
-        }
-    }
-
-    jvm("desktop")
-
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        outputModuleName = "composeApp"
-        browser {
-            val rootDirPath = project.rootDir.path
-            val projectDirPath = project.projectDir.path
-            commonWebpackConfig {
-                outputFileName = "composeApp.js"
-                devServer =
-                    (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                        // Serve sources to debug inside browser
-                        static(rootDirPath)
-                        static(projectDirPath)
-                    }
-            }
-        }
-        binaries.executable()
-    }
-
     sourceSets {
-        val desktopMain by getting
         val commonMain by getting {
             kotlin.srcDir(layout.buildDirectory.dir("generated/src/commonMain/kotlin"))
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(libs.kotlinx.coroutines.test)
-                implementation(libs.turbine)
-                implementation(libs.multiplatform.settings.test)
-            }
         }
 
         val androidMain by getting {
             kotlin.srcDir("src/jvmShared/kotlin")
         }
-        desktopMain.kotlin.srcDir("src/jvmShared/kotlin")
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.lifecycle.process)
@@ -144,75 +93,6 @@ kotlin {
 
             implementation(libs.reorderable)
         }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
-            implementation(libs.ktor.client.cio)
-            implementation(libs.bouncycastle.provider)
-            implementation(libs.slf4j.nop)
-            implementation(libs.litert.lm.jvm)
-        }
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
-            implementation(libs.ktor.network)
-            implementation(libs.ktor.network.tls)
-        }
-        wasmJsMain.dependencies {
-            implementation(libs.ktor.client.js)
-        }
-    }
-}
-
-compose.desktop {
-    application {
-        mainClass = "com.inspiredandroid.kai.MainKt"
-
-        buildTypes.release.proguard {
-            configurationFiles.from(
-                project.file("proguard-rules.pro"),
-                project.file("proguard-desktop.pro"),
-            )
-        }
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm, TargetFormat.AppImage)
-            packageName = "Kai"
-            packageVersion = libs.versions.appVersion.get()
-
-            macOS {
-                iconFile.set(project.file("icon.icns"))
-            }
-            windows {
-                iconFile.set(project.file("icon.ico"))
-                menuGroup = "Kai"
-            }
-            linux {
-                iconFile.set(project.file("icon.png"))
-                modules("jdk.security.auth")
-            }
-        }
-    }
-}
-
-// BouncyCastle is a cryptographically signed JCE provider jar. ProGuard rewrites
-// it and strips the META-INF signatures, causing "SHA-256 digest error" at
-// runtime. After ProGuard finishes, replace the processed jar with the original.
-afterEvaluate {
-    tasks.matching { it.name == "proguardReleaseJars" }.configureEach {
-        doLast {
-            val proguardDir =
-                layout.buildDirectory
-                    .dir("compose/tmp/main-release/proguard")
-                    .get()
-                    .asFile
-            val processedJar = proguardDir.listFiles()?.find { it.name.startsWith("bcprov") } ?: return@doLast
-            val originalJar =
-                configurations["desktopRuntimeClasspath"]
-                    .resolve()
-                    .find { it.name.startsWith("bcprov") } ?: return@doLast
-            originalJar.copyTo(processedJar, overwrite = true)
-            logger.lifecycle("Restored original signed BouncyCastle jar: ${processedJar.name}")
-        }
     }
 }
 
@@ -237,19 +117,6 @@ class VersionGeneratorPlugin : Plugin<Project> {
                 }
                 """.trimIndent(),
             )
-
-            // Update iOS Config.xcconfig with version
-            val xcConfigFile = rootProject.file("iosApp/Configuration/Config.xcconfig")
-            if (xcConfigFile.exists()) {
-                val content = xcConfigFile.readText()
-                val updatedContent =
-                    if (content.contains("APP_VERSION=")) {
-                        content.replace(Regex("APP_VERSION=.*"), "APP_VERSION=$appVersion")
-                    } else {
-                        content.trimEnd() + "\nAPP_VERSION=$appVersion\n"
-                    }
-                xcConfigFile.writeText(updatedContent)
-            }
         }
     }
 }
