@@ -111,6 +111,27 @@ fun AppSettings.exportToJson(
         map["email_poll_interval"] = JsonPrimitive(getEmailPollIntervalMinutes())
     }
 
+    if (ImportSection.GITHUB in sections) {
+        map["github_enabled"] = JsonPrimitive(isGithubEnabled())
+        val githubAccountsJson = getGithubAccountsJson()
+        if (githubAccountsJson.isNotBlank()) {
+            map["github_accounts"] = Json.parseToJsonElement(githubAccountsJson)
+            try {
+                val accounts = Json.parseToJsonElement(githubAccountsJson).jsonArray
+                val syncStates = mutableMapOf<String, JsonElement>()
+                for (account in accounts) {
+                    val id = account.jsonObject["id"]?.jsonPrimitive?.content ?: continue
+                    // Tokens are intentionally NOT exported (same policy as email passwords).
+                    val syncState = getGithubSyncStateJson(id)
+                    if (syncState.isNotBlank()) syncStates[id] = Json.parseToJsonElement(syncState)
+                }
+                if (syncStates.isNotEmpty()) map["github_sync_states"] = JsonObject(syncStates)
+            } catch (_: Exception) {
+            }
+        }
+        map["github_poll_interval"] = JsonPrimitive(getGithubPollIntervalMinutes())
+    }
+
     if (ImportSection.SMS in sections) {
         map["sms_enabled"] = JsonPrimitive(isSmsEnabled())
         map["sms_poll_interval"] = JsonPrimitive(getSmsPollIntervalMinutes())
@@ -283,6 +304,23 @@ fun AppSettings.importFromJson(
         setEmailEnabled(true)
         setEmailAccountsJson("")
         setEmailPollIntervalMinutes(15)
+    }
+
+    if (ImportSection.GITHUB in sections) {
+        try {
+            setGithubEnabled(json["github_enabled"]?.jsonPrimitive?.content?.toBoolean() ?: true)
+            setGithubAccountsJson(json["github_accounts"]?.toString() ?: "")
+            json["github_sync_states"]?.jsonObject?.forEach { (accountId, sync) ->
+                setGithubSyncStateJson(accountId, sync.toString())
+            }
+            setGithubPollIntervalMinutes(json["github_poll_interval"]?.jsonPrimitive?.content?.toInt() ?: 15)
+        } catch (_: Exception) {
+            errors++
+        }
+    } else if (replace) {
+        setGithubEnabled(true)
+        setGithubAccountsJson("")
+        setGithubPollIntervalMinutes(15)
     }
 
     if (ImportSection.SMS in sections) {

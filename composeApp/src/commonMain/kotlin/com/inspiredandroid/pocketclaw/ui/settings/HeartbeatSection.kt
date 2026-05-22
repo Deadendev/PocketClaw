@@ -848,3 +848,93 @@ private fun PresetSlider(
         steps = presets.size - 2,
     )
 }
+
+
+
+@Composable
+internal fun GithubSection(
+    isGithubEnabled: Boolean,
+    githubAccounts: kotlinx.collections.immutable.ImmutableList<com.inspiredandroid.pocketclaw.data.GithubAccount>,
+    pollIntervalMinutes: Int,
+    pendingCount: Int,
+    syncStates: kotlinx.collections.immutable.ImmutableMap<String, com.inspiredandroid.pocketclaw.data.GithubSyncState>,
+    refreshingAccountIds: kotlinx.collections.immutable.ImmutableSet<String>,
+    onToggleGithub: (Boolean) -> Unit,
+    onRemoveAccount: (String) -> Unit,
+    onChangePollInterval: (Int) -> Unit,
+    onRefreshAccount: (String) -> Unit,
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        ToggleableHeadline(
+            title = org.jetbrains.compose.resources.stringResource(pocketclaw.composeapp.generated.resources.Res.string.settings_github),
+            description = org.jetbrains.compose.resources.stringResource(pocketclaw.composeapp.generated.resources.Res.string.settings_github_description),
+            checked = isGithubEnabled,
+            onCheckedChange = onToggleGithub,
+        )
+
+        if (isGithubEnabled) {
+            Spacer(Modifier.height(12.dp))
+
+            if (githubAccounts.isEmpty()) {
+                Text(
+                    text = org.jetbrains.compose.resources.stringResource(pocketclaw.composeapp.generated.resources.Res.string.settings_github_empty),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            } else {
+                if (pendingCount > 0) {
+                    Text(
+                        text = org.jetbrains.compose.resources.stringResource(pocketclaw.composeapp.generated.resources.Res.string.settings_github_queued, pendingCount),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
+                val neverLabel = org.jetbrains.compose.resources.stringResource(pocketclaw.composeapp.generated.resources.Res.string.settings_github_poll_never)
+                PresetSlider(
+                    currentValue = pollIntervalMinutes,
+                    presets = kotlinx.collections.immutable.persistentListOf(0, 5, 15, 30, 60),
+                    fallbackIndex = 0,
+                    label = { minutes -> org.jetbrains.compose.resources.stringResource(pocketclaw.composeapp.generated.resources.Res.string.settings_github_poll_interval, minutes) },
+                    formatValue = { minutes -> if (minutes == 0) neverLabel else "${minutes}m" },
+                    onValueChanged = onChangePollInterval,
+                )
+
+                Spacer(Modifier.height(12.dp))
+
+                val nowMs = remember(syncStates) { kotlin.time.Clock.System.now().toEpochMilliseconds() }
+                for (account in githubAccounts) {
+                    SettingsListItem(
+                        title = account.login,
+                        subtitle = account.apiBaseUrl,
+                        onDelete = { onRemoveAccount(account.id) },
+                        deleteContentDescription = org.jetbrains.compose.resources.stringResource(pocketclaw.composeapp.generated.resources.Res.string.settings_github_remove),
+                        onRefresh = { onRefreshAccount(account.id) },
+                        refreshContentDescription = org.jetbrains.compose.resources.stringResource(pocketclaw.composeapp.generated.resources.Res.string.settings_github_refresh),
+                        isRefreshing = account.id in refreshingAccountIds,
+                    )
+                    val sync = syncStates[account.id]
+                    if (sync != null) {
+                        val failed = sync.lastError != null && sync.lastAttemptEpochMs > 0
+                        val timestampMs = if (failed) sync.lastAttemptEpochMs else sync.lastSyncEpochMs
+                        if (timestampMs > 0) {
+                            val relative = formatPollRelative(nowMs - timestampMs)
+                            val text = if (failed) {
+                                org.jetbrains.compose.resources.stringResource(pocketclaw.composeapp.generated.resources.Res.string.settings_github_poll_failed, relative)
+                            } else {
+                                org.jetbrains.compose.resources.stringResource(pocketclaw.composeapp.generated.resources.Res.string.settings_github_last_poll, relative)
+                            }
+                            Text(
+                                text = text,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = if (failed) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(start = 12.dp, top = 4.dp),
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(8.dp))
+                }
+            }
+        }
+    }
+}

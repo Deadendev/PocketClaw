@@ -32,6 +32,7 @@ class HeartbeatManager(
     private val memoryStore: MemoryStore,
     private val taskStore: TaskStore,
     private val emailStore: EmailStore? = null,
+    private val githubStore: GithubStore? = null,
 ) {
 
     private val json = SharedJson
@@ -72,6 +73,7 @@ class HeartbeatManager(
         pendingEmails: List<EmailMessage> = emptyList(),
         pendingSms: List<SmsMessage> = emptyList(),
         pendingNotifications: List<NotificationRecord> = emptyList(),
+        pendingGithub: List<GithubNotification> = emptyList(),
     ): String {
         val customPrompt = appSettings.getHeartbeatPrompt()
         val tasksSplit = taskStore.getPendingTasksPartitioned()
@@ -140,6 +142,26 @@ class HeartbeatManager(
                 content = entry.content,
             )
         }
+        val githubEnabled = githubStore != null && appSettings.isGithubEnabled()
+        val githubAccountLoginById = if (githubEnabled) {
+            githubStore.getAccounts().associate { it.id to it.login }
+        } else {
+            emptyMap()
+        }
+        val heartbeatGithub: List<HeartbeatPendingGithub> = if (githubEnabled) {
+            pendingGithub.map { item ->
+                HeartbeatPendingGithub(
+                    accountLogin = githubAccountLoginById[item.accountId] ?: item.accountId,
+                    repo = item.repo,
+                    type = item.type,
+                    reason = item.reason,
+                    title = item.subjectTitle,
+                    subjectUrl = item.subjectUrl,
+                )
+            }
+        } else {
+            emptyList()
+        }
         return buildHeartbeatPrompt(
             customOrDefaultPrompt = customPrompt.ifEmpty { DEFAULT_HEARTBEAT_PROMPT },
             heartbeatAdditions = heartbeatAdditions,
@@ -149,6 +171,7 @@ class HeartbeatManager(
             pendingEmails = heartbeatPending,
             pendingSms = heartbeatSms,
             pendingNotifications = heartbeatNotifications,
+            pendingGithub = heartbeatGithub,
             promotionCandidates = promotionCandidates,
         )
     }

@@ -4,6 +4,7 @@ import com.inspiredandroid.pocketclaw.data.AppSettings
 import com.inspiredandroid.pocketclaw.data.ConversationStorage
 import com.inspiredandroid.pocketclaw.data.DataRepository
 import com.inspiredandroid.pocketclaw.data.EmailStore
+import com.inspiredandroid.pocketclaw.data.GithubStore
 import com.inspiredandroid.pocketclaw.data.HeartbeatManager
 import com.inspiredandroid.pocketclaw.data.MemoryStore
 import com.inspiredandroid.pocketclaw.data.NotificationStore
@@ -15,6 +16,7 @@ import com.inspiredandroid.pocketclaw.data.TaskStore
 import com.inspiredandroid.pocketclaw.data.ToolExecutor
 import com.inspiredandroid.pocketclaw.data.runMigrations
 import com.inspiredandroid.pocketclaw.email.EmailPoller
+import com.inspiredandroid.pocketclaw.github.GithubPoller
 import com.inspiredandroid.pocketclaw.inference.createLocalInferenceEngine
 import com.inspiredandroid.pocketclaw.mcp.McpServerManager
 import com.inspiredandroid.pocketclaw.network.Requests
@@ -75,6 +77,12 @@ val appModule = module {
     single<EmailPoller> {
         EmailPoller(get<EmailStore>())
     }
+    single<GithubStore> {
+        GithubStore(get())
+    }
+    single<GithubPoller> {
+        GithubPoller(get<GithubStore>())
+    }
     single<SmsStore> {
         SmsStore(get())
     }
@@ -94,7 +102,7 @@ val appModule = module {
         SplinterlandsApi()
     }
     single<HeartbeatManager> {
-        HeartbeatManager(get(), get(), get(), get())
+        HeartbeatManager(get(), get(), get(), get(), get<GithubStore>())
     }
     single<McpServerManager> {
         McpServerManager(get())
@@ -110,6 +118,8 @@ val appModule = module {
             heartbeatManager = get(),
             emailStore = get(),
             emailPoller = get(),
+            githubStore = get(),
+            githubPoller = get(),
             smsStore = get(),
             smsPoller = get(),
             smsReader = get(),
@@ -139,6 +149,8 @@ val appModule = module {
             get<SmsStore>(),
             get<SmsPoller>(),
             get<NotificationStore>(),
+            get<GithubStore>(),
+            get<GithubPoller>(),
         )
     }
     single<DaemonController> { createDaemonController() }

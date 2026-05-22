@@ -2,6 +2,7 @@ package com.inspiredandroid.pocketclaw.data
 
 import com.inspiredandroid.pocketclaw.email.EmailPoller
 import com.inspiredandroid.pocketclaw.getBackgroundDispatcher
+import com.inspiredandroid.pocketclaw.github.GithubPoller
 import com.inspiredandroid.pocketclaw.isEmailSupported
 import com.inspiredandroid.pocketclaw.isNotificationsSupported
 import com.inspiredandroid.pocketclaw.isSmsSupported
@@ -34,6 +35,8 @@ class TaskScheduler(
     private val smsStore: SmsStore? = null,
     private val smsPoller: SmsPoller? = null,
     private val notificationStore: NotificationStore? = null,
+    private val githubStore: GithubStore? = null,
+    private val githubPoller: GithubPoller? = null,
     private val enabled: Boolean = true,
     private val backgroundDispatcher: CoroutineContext = getBackgroundDispatcher(),
 ) {
@@ -130,6 +133,11 @@ class TaskScheduler(
                 if (!isLoadingCheck() && isSmsSupported && appSettings.isSmsEnabled() && smsStore != null && smsPoller != null) {
                     checkNewSms()
                 }
+
+                // GitHub polling — same shape as email (rate-limited per-account, 0 = never).
+                if (!isLoadingCheck() && appSettings.isGithubEnabled() && githubStore != null && githubPoller != null) {
+                    checkNewGithub { isLoadingCheck() }
+                }
             }
         }
     }
@@ -144,13 +152,14 @@ class TaskScheduler(
         val pendingEmails = emailStore?.getPending().orEmpty()
         val pendingSms = smsStore?.getPending().orEmpty()
         val pendingNotifications = notificationStore?.getPending().orEmpty()
+        val pendingGithub = githubStore?.getPending().orEmpty()
         try {
             val recentResponses = dataRepository.savedConversations.value
                 .find { it.type == Conversation.TYPE_HEARTBEAT }
                 ?.messages?.takeLast(HEARTBEAT_CONTEXT_COUNT)
                 ?.map { it.content }
                 ?: emptyList()
-            val heartbeatPrompt = manager.buildHeartbeatPrompt(recentResponses, pendingEmails, pendingSms, pendingNotifications)
+            val heartbeatPrompt = manager.buildHeartbeatPrompt(recentResponses, pendingEmails, pendingSms, pendingNotifications, pendingGithub)
             val response = dataRepository.askWithTools(heartbeatPrompt, manager.getConfig().heartbeatInstanceId)
             manager.markHeartbeatExecuted()
             manager.recordHeartbeat(success = true)
@@ -199,6 +208,22 @@ class TaskScheduler(
             if (pendingNotifications.isNotEmpty()) {
                 notificationStore?.removePending(pendingNotifications)
             }
+            if (pendingGithub.isNotEmpty()) {
+                githubStore?.let { store ->
+                    store.removePending(pendingGithub)
+                    // Advance per-account watermark to the newest updated_at the heartbeat saw,
+                    // so the next `check_github` call doesn't re-surface the same threads.
+                    val newestByAccount = pendingGithub
+                        .groupBy { it.accountId }
+                        .mapValues { (_, items) -> items.maxOf { it.updatedAt } }
+                    for ((accId, newest) in newestByAccount) {
+                        val current = store.getSyncState(accId)
+                        if (current.lastSeenAt < newest) {
+                            store.updateSyncState(current.copy(lastSeenAt = newest))
+                        }
+                    }
+                }
+            }
             // Sweep retention bounds opportunistically after each heartbeat run.
             notificationStore?.sweep()
         } catch (e: Exception) {
@@ -232,6 +257,22 @@ class TaskScheduler(
         // a word boundary 100 chars back would throw away half the preview.
         val cut = if (lastSpace >= HEARTBEAT_NOTIFICATION_PREVIEW_CHARS - 40) lastSpace else window.length
         return window.substring(0, cut).trimEnd().trimEnd(',', ';', ':') + "…"
+    }
+
+    private suspend fun checkNewGithub(isLoading: () -> Boolean) {
+        if (githubStore == null || appSettings == null || githubPoller == null) return
+        val pollMinutes = appSettings.getGithubPollIntervalMinutes()
+        if (pollMinutes <= 0) return
+        val pollIntervalMs = pollMinutes * 60_000L
+        val now = Clock.System.now().toEpochMilliseconds()
+
+        for (account in githubStore.getAccounts()) {
+            if (isLoading()) break
+            val syncState = githubStore.getSyncState(account.id)
+            val lastActivityMs = maxOf(syncState.lastSyncEpochMs, syncState.lastAttemptEpochMs)
+            if (now - lastActivityMs < pollIntervalMs) continue
+            githubPoller.poll(account)
+        }
     }
 
     private suspend fun checkNewEmails(isLoading: () -> Boolean) {

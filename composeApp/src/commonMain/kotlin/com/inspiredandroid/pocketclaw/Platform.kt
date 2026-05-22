@@ -55,6 +55,8 @@ expect fun getPlatformToolDefinitions(): List<ToolInfo>
 
 expect val isEmailSupported: Boolean
 
+expect val isGithubSupported: Boolean
+
 /**
  * True only on the FOSS Android build. Gated on `READ_SMS` being declared in the
  * merged manifest — the Play Store flavor doesn't declare it, so this returns
