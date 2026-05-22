@@ -14,7 +14,7 @@ composeCompiler {
 
 kotlin {
     androidLibrary {
-        namespace = "com.inspiredandroid.kai.shared"
+        namespace = "com.inspiredandroid.pocketclaw.shared"
         compileSdk =
             libs.versions.android.compileSdk
                 .get()
@@ -104,13 +104,13 @@ class VersionGeneratorPlugin : Plugin<Project> {
             // Generate Kotlin version file
             val versionFile =
                 layout.buildDirectory
-                    .file("generated/src/commonMain/kotlin/com/inspiredandroid/kai/Version.kt")
+                    .file("generated/src/commonMain/kotlin/com/inspiredandroid/pocketclaw/Version.kt")
                     .get()
                     .asFile
             versionFile.parentFile?.mkdirs()
             versionFile.writeText(
                 """
-                package com.inspiredandroid.kai
+                package com.inspiredandroid.pocketclaw
 
                 object Version {
                     const val appVersion = "$appVersion"
