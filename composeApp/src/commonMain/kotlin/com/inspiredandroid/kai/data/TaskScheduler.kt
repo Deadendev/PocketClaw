@@ -168,7 +168,7 @@ class TaskScheduler(
                     )
                     if (preview.isNotBlank()) {
                         sendHeartbeatNotification(
-                            title = "Mr. Robot heartbeat",
+                            title = "PocketClaw heartbeat",
                             body = preview,
                         )
                     }
