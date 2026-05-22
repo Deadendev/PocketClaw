@@ -95,7 +95,7 @@ class McpClient(
             put(
                 "clientInfo",
                 buildJsonObject {
-                    put("name", JsonPrimitive("Mr. Robot"))
+                    put("name", JsonPrimitive("PocketClaw"))
                     put("version", JsonPrimitive("1.0"))
                 },
             )

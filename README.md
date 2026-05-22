@@ -1,4 +1,4 @@
-# Mr. Robot
+# PocketClaw
 
 <img src="https://img.shields.io/badge/Platform-Android-34a853.svg?logo=android" alt="Android" />
 
@@ -16,11 +16,11 @@ The signed release APK is produced by the `Build and Release` GitHub Action when
 
 ## AI That Builds Screens, Not Just Text
 
-Mr. Robot's Interactive UI lets the AI generate full interactive screens — quizzes, dashboards, recipes, brainstorms, and more. Navigate by tapping buttons instead of scrolling through chat.
+PocketClaw's Interactive UI lets the AI generate full interactive screens — quizzes, dashboards, recipes, brainstorms, and more. Navigate by tapping buttons instead of scrolling through chat.
 
 ## Features
 
-- **Persistent memory** — Mr. Robot remembers important details across conversations and uses them automatically
+- **Persistent memory** — PocketClaw remembers important details across conversations and uses them automatically
 - **Customizable soul** — Define the AI's personality and behavior with an editable system prompt
 - **Multi-service fallback** — 24 LLM providers with automatic failover
 - **On-device inference** — Run AI models locally on Android using LiteRT, no internet needed
@@ -35,7 +35,7 @@ Mr. Robot's Interactive UI lets the AI generate full interactive screens — qui
 
 ## Linux Sandbox
 
-Mr. Robot includes a built-in Linux environment that the AI can use to execute shell commands, run scripts, and operate tools on your behalf. This turns Mr. Robot from a chat-only assistant into one that can take real action — installing packages, processing data, running Python scripts, and more.
+PocketClaw includes a built-in Linux environment that the AI can use to execute shell commands, run scripts, and operate tools on your behalf. This turns PocketClaw from a chat-only assistant into one that can take real action — installing packages, processing data, running Python scripts, and more.
 
 - **Powered by Alpine Linux** — A lightweight ~3 MB download sets up a full Linux userland via [proot](https://proot-me.github.io/), no root required
 - **Optional packages** — One tap installs bash, curl, wget, git, jq, python3, pip, and Node.js
@@ -106,7 +106,7 @@ Enable it in **Settings > Linux Sandbox**.
 
 ## MCP Servers
 
-Mr. Robot supports the [Model Context Protocol](https://modelcontextprotocol.io/) for connecting to external tool servers. Go to **Settings > Tools > Add MCP Server** to connect to any Streamable HTTP MCP endpoint, or pick from a curated list of popular free servers:
+PocketClaw supports the [Model Context Protocol](https://modelcontextprotocol.io/) for connecting to external tool servers. Go to **Settings > Tools > Add MCP Server** to connect to any Streamable HTTP MCP endpoint, or pick from a curated list of popular free servers:
 
 | Server | Description |
 |--------|-------------|
@@ -125,7 +125,7 @@ All popular servers are free and require no API key. MCP servers auto-reconnect 
 
 ### Splinterlands Auto-Battle
 
-Mr. Robot can automatically play [Splinterlands](https://splinterlands.com) Wild Ranked battles. Configure one or more LLM services in priority order, add your Hive account, and hit Start — Mr. Robot will continuously find matches, pick teams using LLM-powered strategy, and submit them on-chain. Falls back to a simple greedy picker if all LLM services fail. Available in **Settings > Integrations**.
+PocketClaw can automatically play [Splinterlands](https://splinterlands.com) Wild Ranked battles. Configure one or more LLM services in priority order, add your Hive account, and hit Start — PocketClaw will continuously find matches, pick teams using LLM-powered strategy, and submit them on-chain. Falls back to a simple greedy picker if all LLM services fail. Available in **Settings > Integrations**.
 
 ## Supported Languages
 
