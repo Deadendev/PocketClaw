@@ -374,8 +374,8 @@ Wenn etwas Aufmerksamkeit erfordert (veraltete Erinnerungen, fällige Aufgaben, 
     <string name="sandbox_files_editor_open_in_app">Mit App öffnen</string>
     <string name="sandbox_files_editor_force_open_as_text">Als Text öffnen erzwingen</string>
     <string name="sandbox_files_editor_save">Speichern</string>
-    <string name="kai_ui_render_failed">UI konnte nicht gerendert werden</string>
-    <string name="kai_ui_code_copy">Kopieren</string>
+    <string name="pocketclaw_ui_render_failed">UI konnte nicht gerendert werden</string>
+    <string name="pocketclaw_ui_code_copy">Kopieren</string>
     <string name="image_viewer_close">Schließen</string>
     <string name="bot_message_thinking_label">Überlegt</string>
     <string name="bot_message_thinking_expand_content_description">Überlegung ein- oder ausklappen</string>

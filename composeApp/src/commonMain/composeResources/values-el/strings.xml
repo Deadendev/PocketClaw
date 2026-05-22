@@ -373,8 +373,8 @@
     <string name="sandbox_files_editor_open_in_app">Άνοιγμα σε εφαρμογή</string>
     <string name="sandbox_files_editor_force_open_as_text">Εξαναγκασμός ανοίγματος ως κείμενο</string>
     <string name="sandbox_files_editor_save">Αποθήκευση</string>
-    <string name="kai_ui_render_failed">Αποτυχία απόδοσης UI</string>
-    <string name="kai_ui_code_copy">Αντιγραφή</string>
+    <string name="pocketclaw_ui_render_failed">Αποτυχία απόδοσης UI</string>
+    <string name="pocketclaw_ui_code_copy">Αντιγραφή</string>
     <string name="image_viewer_close">Κλείσιμο</string>
     <string name="bot_message_thinking_label">Σκέψη</string>
     <string name="bot_message_thinking_expand_content_description">Ανάπτυξη ή σύμπτυξη σκέψης</string>

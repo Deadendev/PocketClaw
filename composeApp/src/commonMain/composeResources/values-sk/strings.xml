@@ -372,8 +372,8 @@
     <string name="sandbox_files_editor_open_in_app">Otvoriť v aplikácii</string>
     <string name="sandbox_files_editor_force_open_as_text">Vynútiť otvorenie ako text</string>
     <string name="sandbox_files_editor_save">Uložiť</string>
-    <string name="kai_ui_render_failed">Vykreslenie rozhrania zlyhalo</string>
-    <string name="kai_ui_code_copy">Kopírovať</string>
+    <string name="pocketclaw_ui_render_failed">Vykreslenie rozhrania zlyhalo</string>
+    <string name="pocketclaw_ui_code_copy">Kopírovať</string>
     <string name="image_viewer_close">Zavrieť</string>
     <string name="bot_message_thinking_label">Premýšľanie</string>
     <string name="bot_message_thinking_expand_content_description">Rozbaliť alebo zbaliť premýšľanie</string>

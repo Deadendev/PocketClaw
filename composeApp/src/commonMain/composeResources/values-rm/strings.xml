@@ -372,8 +372,8 @@
     <string name="sandbox_files_editor_open_in_app">Avrir en l'applicaziun</string>
     <string name="sandbox_files_editor_force_open_as_text">Sfurzar d'avrir sco text</string>
     <string name="sandbox_files_editor_save">Memorisar</string>
-    <string name="kai_ui_render_failed">L'interfatscha n'ha betg pudì vegnir rendida</string>
-    <string name="kai_ui_code_copy">Copiar</string>
+    <string name="pocketclaw_ui_render_failed">L'interfatscha n'ha betg pudì vegnir rendida</string>
+    <string name="pocketclaw_ui_code_copy">Copiar</string>
     <string name="image_viewer_close">Serrar</string>
     <string name="bot_message_thinking_label">Patratga</string>
     <string name="bot_message_thinking_expand_content_description">Expander u plegar il patratgar</string>

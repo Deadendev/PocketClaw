@@ -372,8 +372,8 @@
     <string name="sandbox_files_editor_open_in_app">Vula kuhlelo lokusebenza</string>
     <string name="sandbox_files_editor_force_open_as_text">Phoqelela ukuvula njengombhalo</string>
     <string name="sandbox_files_editor_save">Gcina</string>
-    <string name="kai_ui_render_failed">Yehlulekile ukukhipha i-UI</string>
-    <string name="kai_ui_code_copy">Kopisha</string>
+    <string name="pocketclaw_ui_render_failed">Yehlulekile ukukhipha i-UI</string>
+    <string name="pocketclaw_ui_code_copy">Kopisha</string>
     <string name="image_viewer_close">Vala</string>
     <string name="bot_message_thinking_label">Ukucabanga</string>
     <string name="bot_message_thinking_expand_content_description">Nweba noma goqa ukucabanga</string>

@@ -373,8 +373,8 @@ Jeśli coś wymaga uwagi (przestarzałe wspomnienia, zaległe zadania, dalsze dz
     <string name="sandbox_files_editor_open_in_app">Otwórz w aplikacji</string>
     <string name="sandbox_files_editor_force_open_as_text">Wymuś otwarcie jako tekst</string>
     <string name="sandbox_files_editor_save">Zapisz</string>
-    <string name="kai_ui_render_failed">Nie udało się wyrenderować interfejsu</string>
-    <string name="kai_ui_code_copy">Kopiuj</string>
+    <string name="pocketclaw_ui_render_failed">Nie udało się wyrenderować interfejsu</string>
+    <string name="pocketclaw_ui_code_copy">Kopiuj</string>
     <string name="image_viewer_close">Zamknij</string>
     <string name="bot_message_thinking_label">Myślenie</string>
     <string name="bot_message_thinking_expand_content_description">Rozwiń lub zwiń myślenie</string>

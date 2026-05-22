@@ -372,8 +372,8 @@
     <string name="sandbox_files_editor_open_in_app">Atvērt lietotnē</string>
     <string name="sandbox_files_editor_force_open_as_text">Piespiedu kārtā atvērt kā tekstu</string>
     <string name="sandbox_files_editor_save">Saglabāt</string>
-    <string name="kai_ui_render_failed">Neizdevās renderēt saskarni</string>
-    <string name="kai_ui_code_copy">Kopēt</string>
+    <string name="pocketclaw_ui_render_failed">Neizdevās renderēt saskarni</string>
+    <string name="pocketclaw_ui_code_copy">Kopēt</string>
     <string name="image_viewer_close">Aizvērt</string>
     <string name="bot_message_thinking_label">Domāšana</string>
     <string name="bot_message_thinking_expand_content_description">Izvērst vai sakļaut domāšanu</string>

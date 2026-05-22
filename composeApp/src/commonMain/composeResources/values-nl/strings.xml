@@ -373,8 +373,8 @@ Als iets aandacht nodig heeft (verouderde herinneringen, verlopen taken, gebruik
     <string name="sandbox_files_editor_open_in_app">Openen in app</string>
     <string name="sandbox_files_editor_force_open_as_text">Geforceerd openen als tekst</string>
     <string name="sandbox_files_editor_save">Opslaan</string>
-    <string name="kai_ui_render_failed">Kan UI niet renderen</string>
-    <string name="kai_ui_code_copy">Kopiëren</string>
+    <string name="pocketclaw_ui_render_failed">Kan UI niet renderen</string>
+    <string name="pocketclaw_ui_code_copy">Kopiëren</string>
     <string name="image_viewer_close">Sluiten</string>
     <string name="bot_message_thinking_label">Denken</string>
     <string name="bot_message_thinking_expand_content_description">Denken uitvouwen of inklappen</string>

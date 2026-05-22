@@ -366,8 +366,8 @@
     <string name="sandbox_files_editor_open_in_app">Open in app</string>
     <string name="sandbox_files_editor_force_open_as_text">Force open as text</string>
     <string name="sandbox_files_editor_save">Save</string>
-    <string name="kai_ui_render_failed">Failed to render UI</string>
-    <string name="kai_ui_code_copy">Copy</string>
+    <string name="pocketclaw_ui_render_failed">Failed to render UI</string>
+    <string name="pocketclaw_ui_code_copy">Copy</string>
     <string name="image_viewer_close">Close</string>
     <string name="settings_sandbox_uninstall">Uninstall</string>
     <string name="settings_sandbox_uninstall_confirm">All data in the Linux sandbox will be lost. Are you sure you want to uninstall?</string>
