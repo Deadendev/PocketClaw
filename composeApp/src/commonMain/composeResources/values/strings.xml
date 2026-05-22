@@ -326,6 +326,7 @@
     <string name="settings_import_section_scheduling">Scheduling</string>
     <string name="settings_import_section_heartbeat">Heartbeat</string>
     <string name="settings_import_section_email">Email</string>
+    <string name="settings_import_section_github">GitHub</string>
     <string name="settings_import_section_tools">Tools</string>
     <string name="settings_import_section_mcp">MCP Servers</string>
     <string name="settings_import_section_conversations">Conversations</string>
@@ -333,6 +334,7 @@
     <string name="snackbar_memory_deleted">Memory deleted</string>
     <string name="snackbar_task_cancelled">Task cancelled</string>
     <string name="snackbar_email_removed">Email account removed</string>
+    <string name="snackbar_github_removed">GitHub account removed</string>
     <string name="snackbar_service_removed">Service removed</string>
     <string name="snackbar_mcp_server_removed">MCP server removed</string>
     <string name="snackbar_conversation_deleted">Conversation deleted</string>
