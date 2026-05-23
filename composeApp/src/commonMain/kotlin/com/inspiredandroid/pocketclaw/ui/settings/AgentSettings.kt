@@ -174,6 +174,7 @@ internal fun AgentContent(uiState: SettingsUiState, actions: SettingsActions) {
                                 onRemoveAccount = actions.onRemoveGithubAccount,
                                 onChangePollInterval = actions.onChangeGithubPollInterval,
                                 onRefreshAccount = actions.onRefreshGithubAccount,
+                                onAddAccount = actions.onAddGithubAccount,
                             )
                         }
                     }
@@ -284,6 +285,7 @@ internal fun AgentContent(uiState: SettingsUiState, actions: SettingsActions) {
                             onRemoveAccount = actions.onRemoveGithubAccount,
                             onChangePollInterval = actions.onChangeGithubPollInterval,
                             onRefreshAccount = actions.onRefreshGithubAccount,
+                            onAddAccount = actions.onAddGithubAccount,
                         )
                     }
                 }
