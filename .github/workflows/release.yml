@@ -47,6 +47,17 @@ jobs:
           name: signed-apk
           path: androidApp/build/outputs/apk/foss/release/androidApp-foss-release-signed.apk
 
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-build-logs
+          path: |
+            **/build/reports/
+            **/build/outputs/logs/
+          if-no-files-found: ignore
+          retention-days: 14
+
   release:
     name: Release APK
     needs: [apk]
