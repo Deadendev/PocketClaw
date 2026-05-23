@@ -1,4 +1,4 @@
-name: Step 12 Final Build Validation
+name: Final Build Validation
 
 on:
   workflow_dispatch:
@@ -18,11 +18,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Java 17
+      - name: Setup Java 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "21"
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -47,8 +47,12 @@ jobs:
           echo "===== WORKFLOWS ====="
           find .github/workflows -maxdepth 1 -type f | sort || true
 
-          echo "===== ANDROID SOURCE ====="
-          find app/src/main/java/com/mrrobot/aiworkspace -type f | sort
+          echo "===== ANDROID APP SOURCE ====="
+          find androidApp/src -type f | sort
+
+          echo "===== COMPOSE APP TOP-LEVEL SOURCE ====="
+          find composeApp/src/commonMain/kotlin -maxdepth 4 -type f -name '*.kt' | sort | head -40
+          find composeApp/src/androidMain/kotlin -maxdepth 4 -type f -name '*.kt' | sort
 
       - name: Validate required files
         shell: bash
@@ -60,37 +64,17 @@ jobs:
             "build.gradle.kts"
             "gradle.properties"
             "gradlew"
-            "app/build.gradle.kts"
-            "app/src/main/AndroidManifest.xml"
-            "app/src/main/java/com/mrrobot/aiworkspace/MainActivity.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/navigation/AppNavGraph.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/ui/components/UiComponents.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/ui/theme/Theme.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/WelcomeScreen.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/ChatScreen.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/AgentsScreen.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/SkillsScreen.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/SandboxScreen.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/MarketplaceScreen.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/SettingsScreen.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/ProfileScreen.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/data/SettingsStore.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/data/ChatRepository.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/data/AiModels.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/data/Agent.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/data/SkillStore.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/sandbox/SandboxManager.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/sandbox/ProotExecutor.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/sandbox/SandboxShell.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/data/MarketplaceModels.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/data/ProfileModels.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/viewmodel/SettingsViewModel.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/viewmodel/ChatViewModel.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/viewmodel/AgentsViewModel.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/viewmodel/SkillsViewModel.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/viewmodel/SandboxViewModel.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/viewmodel/MarketplaceViewModel.kt"
-            "app/src/main/java/com/mrrobot/aiworkspace/viewmodel/ProfileViewModel.kt"
+            "androidApp/build.gradle.kts"
+            "androidApp/src/main/AndroidManifest.xml"
+            "androidApp/src/main/kotlin/com/inspiredandroid/pocketclaw/MainActivity.kt"
+            "androidApp/src/main/kotlin/com/inspiredandroid/pocketclaw/PocketClawApplication.kt"
+            "composeApp/build.gradle.kts"
+            "composeApp/src/commonMain/kotlin/com/inspiredandroid/pocketclaw/App.kt"
+            "composeApp/src/commonMain/kotlin/com/inspiredandroid/pocketclaw/AppModule.kt"
+            "composeApp/src/commonMain/kotlin/com/inspiredandroid/pocketclaw/Platform.kt"
+            "composeApp/src/commonMain/kotlin/com/inspiredandroid/pocketclaw/data/AppSettings.kt"
+            "composeApp/src/commonMain/kotlin/com/inspiredandroid/pocketclaw/data/DataRepository.kt"
+            "composeApp/src/commonMain/composeResources/values/strings.xml"
           )
 
           missing=0
@@ -115,29 +99,31 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ./gradlew projects --stacktrace 2>&1 | tee gradle-projects-log.txt
+          ./gradlew projects --stacktrace --console=plain 2>&1 | tee gradle-projects-log.txt
 
       - name: Run Gradle dependency insight
         shell: bash
         run: |
-          set -euo pipefail
-          ./gradlew :app:dependencies --configuration debugRuntimeClasspath 2>&1 | tee gradle-dependencies-log.txt
+          set -o pipefail
+          ./gradlew :androidApp:dependencies --configuration fossDebugRuntimeClasspath --console=plain 2>&1 | tee gradle-dependencies-log.txt
 
-      - name: Build Debug APK
+      - name: Build Foss Debug APK
         shell: bash
         run: |
-          set -euo pipefail
-          ./gradlew clean assembleDebug --stacktrace --info 2>&1 | tee build-log.txt
+          set -o pipefail
+          ./gradlew clean :androidApp:assembleFossDebug --stacktrace --info --console=plain --warning-mode=all 2>&1 | tee build-log.txt
 
       - name: Verify APK exists
         shell: bash
         run: |
           set -euo pipefail
 
-          APK_DIR="app/build/outputs/apk/debug"
+          APK_DIR="androidApp/build/outputs/apk/foss/debug"
 
           if [ ! -d "$APK_DIR" ]; then
             echo "APK directory does not exist: $APK_DIR"
+            echo "Contents of androidApp/build/outputs:"
+            find androidApp/build/outputs -maxdepth 5 -type f 2>/dev/null | sort || true
             exit 1
           fi
 
@@ -145,8 +131,8 @@ jobs:
 
           if [ "$APK_COUNT" -eq 0 ]; then
             echo "No APK was produced."
-            echo "Contents of app/build/outputs:"
-            find app/build/outputs -maxdepth 5 -type f | sort || true
+            echo "Contents of androidApp/build/outputs:"
+            find androidApp/build/outputs -maxdepth 5 -type f | sort || true
             exit 1
           fi
 
@@ -158,34 +144,27 @@ jobs:
         shell: bash
         run: |
           {
-            echo "# Mr. Robot AI Workspace Final Validation"
+            echo "# PocketClaw Final Validation"
             echo
             echo "## Project"
-            echo "- Package: com.mrrobot.aiworkspace"
-            echo "- Stack: Kotlin, Jetpack Compose, Material 3, MVVM, DataStore, OpenRouter, GitHub Actions"
-            echo
-            echo "## Included Systems"
-            echo "- Welcome dashboard"
-            echo "- OpenRouter chat"
-            echo "- Persistent settings"
-            echo "- Auto / Dark / Light theme modes"
-            echo "- Model selector"
-            echo "- Agent system"
-            echo "- Skills (multi-skill management)"
-            echo "- Terminal logs"
-            echo "- File manager"
-            echo "- Marketplace"
-            echo "- Profile workspace identity"
-            echo "- Premium cyberpunk UI"
+            echo "- Application id: com.inspiredandroid.pocketclaw"
+            echo "- Modules: :androidApp, :composeApp"
+            echo "- Stack: Kotlin Multiplatform, Jetpack Compose, Material 3, Koin"
+            echo "- Target: Android only (foss flavor)"
             echo
             echo "## APK Output"
             echo "\`\`\`text"
-            find app/build/outputs/apk -type f -name "*.apk" 2>/dev/null || true
+            find androidApp/build/outputs/apk -type f -name "*.apk" 2>/dev/null || true
             echo "\`\`\`"
             echo
-            echo "## Source File Count"
+            echo "## Source File Counts"
             echo "\`\`\`text"
-            find app/src/main/java/com/mrrobot/aiworkspace -type f | wc -l
+            echo -n "androidApp .kt files: "
+            find androidApp/src -type f -name '*.kt' | wc -l
+            echo -n "composeApp commonMain .kt files: "
+            find composeApp/src/commonMain/kotlin -type f -name '*.kt' | wc -l
+            echo -n "composeApp androidMain .kt files: "
+            find composeApp/src/androidMain/kotlin -type f -name '*.kt' | wc -l
             echo "\`\`\`"
           } > VALIDATION_SUMMARY.md
 
@@ -199,10 +178,14 @@ jobs:
             gradle-projects-log.txt
             gradle-dependencies-log.txt
             VALIDATION_SUMMARY.md
+            **/build/reports/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Upload final APK
         uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: mr-robot-ai-workspace-final-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          name: pocketclaw-foss-debug-apk
+          path: androidApp/build/outputs/apk/foss/debug/*.apk
+          if-no-files-found: error
