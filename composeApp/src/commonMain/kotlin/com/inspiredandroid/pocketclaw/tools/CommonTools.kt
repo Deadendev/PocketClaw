@@ -243,13 +243,14 @@ object CommonTools {
         SchedulingTools.schedulingToolDefinitions +
         HeartbeatTools.heartbeatToolDefinitions +
         EmailTools.emailToolDefinitions +
+        GithubTools.githubToolDefinitions +
         SmsTools.smsToolDefinitions
 
     // Tool IDs gated by master toggles in Settings → Agent (isMemoryEnabled / isSchedulingEnabled /
-    // isEmailEnabled / isSmsEnabled / isSmsSendEnabled). They stay in `commonToolDefinitions` so the
-    // chat UI can resolve their display names, but the Tools tab filters them out — toggling them
-    // individually would have no effect, since `getAvailableTools()` only consults the master toggle
-    // (heartbeat tools are bundled with scheduling under the same switch).
+    // isEmailEnabled / isGithubEnabled / isSmsEnabled / isSmsSendEnabled). They stay in
+    // `commonToolDefinitions` so the chat UI can resolve their display names, but the Tools tab
+    // filters them out — toggling them individually would have no effect, since `getAvailableTools()`
+    // only consults the master toggle (heartbeat tools are bundled with scheduling under the same switch).
     val masterToggleControlledToolIds: Set<String> = setOf(
         memoryStoreToolInfo.id,
         memoryForgetToolInfo.id,
@@ -258,6 +259,7 @@ object CommonTools {
     ) + SchedulingTools.schedulingToolDefinitions.map { it.id }.toSet() +
         HeartbeatTools.heartbeatToolDefinitions.map { it.id }.toSet() +
         EmailTools.emailToolDefinitions.map { it.id }.toSet() +
+        GithubTools.githubToolDefinitions.map { it.id }.toSet() +
         SmsTools.smsToolDefinitions.map { it.id }.toSet()
 
     fun getCommonTools(appSettings: AppSettings): List<Tool> = buildList {

@@ -13,6 +13,7 @@ import androidx.core.graphics.scale
 import androidx.core.net.toUri
 import com.inspiredandroid.pocketclaw.data.AppSettings
 import com.inspiredandroid.pocketclaw.data.EmailStore
+import com.inspiredandroid.pocketclaw.data.GithubStore
 import com.inspiredandroid.pocketclaw.data.MemoryStore
 import com.inspiredandroid.pocketclaw.data.NotificationStore
 import com.inspiredandroid.pocketclaw.data.SmsDraftStore
@@ -33,6 +34,7 @@ import com.inspiredandroid.pocketclaw.tools.CalendarRepository
 import com.inspiredandroid.pocketclaw.tools.CalendarResult
 import com.inspiredandroid.pocketclaw.tools.CommonTools
 import com.inspiredandroid.pocketclaw.tools.EmailTools
+import com.inspiredandroid.pocketclaw.tools.GithubTools
 import com.inspiredandroid.pocketclaw.tools.HeartbeatTools
 import com.inspiredandroid.pocketclaw.tools.NotificationHelper
 import com.inspiredandroid.pocketclaw.tools.NotificationPermissionController
@@ -85,6 +87,8 @@ actual val currentPlatform: Platform = Platform.Mobile.Android
 actual val defaultUiScale: Float = 1.0f
 
 actual val isEmailSupported: Boolean = true
+
+actual val isGithubSupported: Boolean = true
 
 // Evaluated lazily because we need the Koin-injected Context. Whether READ_SMS
 // is declared in the merged manifest is a build-time property (foss flavor adds
@@ -430,6 +434,11 @@ actual fun getAvailableTools(): List<Tool> {
 
         if (appSettings.isEmailEnabled()) {
             addAll(EmailTools.getEmailTools(emailStore))
+        }
+
+        if (appSettings.isGithubEnabled()) {
+            val githubStore: GithubStore by inject(GithubStore::class.java)
+            addAll(GithubTools.getGithubTools(githubStore))
         }
 
         // SMS read tools: triple-gated. `isSmsSupported` is only true on FOSS builds

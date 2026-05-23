@@ -130,6 +130,17 @@ interface DataRepository {
     fun getEmailSyncStates(): Map<String, EmailSyncState>
     suspend fun pollEmailAccount(accountId: String)
 
+    // GitHub
+    fun isGithubEnabled(): Boolean
+    fun setGithubEnabled(enabled: Boolean)
+    fun getGithubAccounts(): List<GithubAccount>
+    suspend fun removeGithubAccount(id: String)
+    fun getGithubPollIntervalMinutes(): Int
+    fun setGithubPollIntervalMinutes(minutes: Int)
+    fun getPendingGithubCount(): Int
+    fun getGithubSyncStates(): Map<String, GithubSyncState>
+    suspend fun pollGithubAccount(accountId: String)
+
     // SMS (FOSS-only on Android; other platforms return stub values).
     // Read and send are independent opt-ins with separate runtime permissions.
     fun isSmsEnabled(): Boolean

@@ -357,6 +357,7 @@ fun SettingsScreenContent(
     val memoryDeletedMsg = stringResource(Res.string.snackbar_memory_deleted)
     val taskCancelledMsg = stringResource(Res.string.snackbar_task_cancelled)
     val emailRemovedMsg = stringResource(Res.string.snackbar_email_removed)
+    val githubRemovedMsg = stringResource(Res.string.snackbar_github_removed)
     val serviceRemovedMsg = stringResource(Res.string.snackbar_service_removed)
     val mcpServerRemovedMsg = stringResource(Res.string.snackbar_mcp_server_removed)
 
@@ -367,6 +368,7 @@ fun SettingsScreenContent(
             is PendingDeletion.Memory -> memoryDeletedMsg
             is PendingDeletion.Task -> taskCancelledMsg
             is PendingDeletion.EmailAccount -> emailRemovedMsg
+            is PendingDeletion.GithubAccount -> githubRemovedMsg
             is PendingDeletion.Service -> serviceRemovedMsg
             is PendingDeletion.McpServer -> mcpServerRemovedMsg
         }
@@ -390,6 +392,9 @@ fun SettingsScreenContent(
     val filteredEmailAccounts = remember(uiState.emailAccounts, pendingDeletion) {
         if (pendingDeletion is PendingDeletion.EmailAccount) uiState.emailAccounts.filter { it.id != pendingDeletion.id }.toImmutableList() else uiState.emailAccounts
     }
+    val filteredGithubAccounts = remember(uiState.githubAccounts, pendingDeletion) {
+        if (pendingDeletion is PendingDeletion.GithubAccount) uiState.githubAccounts.filter { it.id != pendingDeletion.id }.toImmutableList() else uiState.githubAccounts
+    }
     val filteredServices = remember(uiState.configuredServices, pendingDeletion) {
         if (pendingDeletion is PendingDeletion.Service) uiState.configuredServices.filter { it.instanceId != pendingDeletion.instanceId }.toImmutableList() else uiState.configuredServices
     }
@@ -397,11 +402,12 @@ fun SettingsScreenContent(
         if (pendingDeletion is PendingDeletion.McpServer) uiState.mcpServers.filter { it.id != pendingDeletion.serverId }.toImmutableList() else uiState.mcpServers
     }
 
-    val filteredUiState = remember(uiState, filteredMemories, filteredTasks, filteredEmailAccounts, filteredServices, filteredMcpServers) {
+    val filteredUiState = remember(uiState, filteredMemories, filteredTasks, filteredEmailAccounts, filteredGithubAccounts, filteredServices, filteredMcpServers) {
         uiState.copy(
             memories = filteredMemories,
             scheduledTasks = filteredTasks,
             emailAccounts = filteredEmailAccounts,
+            githubAccounts = filteredGithubAccounts,
             configuredServices = filteredServices,
             mcpServers = filteredMcpServers,
         )

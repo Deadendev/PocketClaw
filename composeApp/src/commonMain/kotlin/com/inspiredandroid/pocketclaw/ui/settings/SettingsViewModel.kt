@@ -15,6 +15,7 @@ import com.inspiredandroid.pocketclaw.getBackgroundDispatcher
 import com.inspiredandroid.pocketclaw.httpClient
 import com.inspiredandroid.pocketclaw.inference.LocalModel
 import com.inspiredandroid.pocketclaw.isEmailSupported
+import com.inspiredandroid.pocketclaw.isGithubSupported
 import com.inspiredandroid.pocketclaw.isNotificationsSupported
 import com.inspiredandroid.pocketclaw.isSmsSupported
 import com.inspiredandroid.pocketclaw.mcp.PopularMcpServer
@@ -99,6 +100,12 @@ class SettingsViewModel(
         emailPollIntervalMinutes = dataRepository.getEmailPollIntervalMinutes(),
         emailPendingCount = dataRepository.getPendingEmailCount(),
         emailSyncStates = dataRepository.getEmailSyncStates().toImmutableMap(),
+        isGithubEnabled = dataRepository.isGithubEnabled(),
+        showGithubToggle = isGithubSupported,
+        githubAccounts = dataRepository.getGithubAccounts().toImmutableList(),
+        githubPollIntervalMinutes = dataRepository.getGithubPollIntervalMinutes(),
+        githubPendingCount = dataRepository.getPendingGithubCount(),
+        githubSyncStates = dataRepository.getGithubSyncStates().toImmutableMap(),
         showSmsSection = isSmsSupported,
         isSmsEnabled = dataRepository.isSmsEnabled(),
         smsPermissionGranted = dataRepository.hasSmsPermission(),
@@ -155,6 +162,10 @@ class SettingsViewModel(
         onRemoveEmailAccount = ::onRemoveEmailAccount,
         onChangeEmailPollInterval = ::onChangeEmailPollInterval,
         onRefreshEmailAccount = ::onRefreshEmailAccount,
+        onToggleGithub = ::onToggleGithub,
+        onRemoveGithubAccount = ::onRemoveGithubAccount,
+        onChangeGithubPollInterval = ::onChangeGithubPollInterval,
+        onRefreshGithubAccount = ::onRefreshGithubAccount,
         onToggleSms = ::onToggleSms,
         onChangeSmsPollInterval = ::onChangeSmsPollInterval,
         onRefreshSms = ::onRefreshSms,
@@ -530,6 +541,40 @@ class SettingsViewModel(
         }
     }
 
+    private fun onToggleGithub(enabled: Boolean) {
+        dataRepository.setGithubEnabled(enabled)
+        _state.update { it.copy(isGithubEnabled = enabled) }
+    }
+
+    private fun onRemoveGithubAccount(id: String) {
+        commitPendingDeletion()
+        _state.update { it.copy(pendingDeletion = PendingDeletion.GithubAccount(id)) }
+        pendingDeleteJob = viewModelScope.launch(backgroundDispatcher) {
+            delay(4.seconds)
+            executeDeletion(PendingDeletion.GithubAccount(id))
+        }
+    }
+
+    private fun onChangeGithubPollInterval(minutes: Int) {
+        dataRepository.setGithubPollIntervalMinutes(minutes)
+        _state.update { it.copy(githubPollIntervalMinutes = minutes) }
+    }
+
+    private fun onRefreshGithubAccount(id: String) {
+        if (id in _state.value.refreshingGithubAccountIds) return
+        _state.update { it.copy(refreshingGithubAccountIds = (it.refreshingGithubAccountIds + id).toPersistentSet()) }
+        viewModelScope.launch(backgroundDispatcher) {
+            dataRepository.pollGithubAccount(id)
+            _state.update {
+                it.copy(
+                    refreshingGithubAccountIds = (it.refreshingGithubAccountIds - id).toPersistentSet(),
+                    githubSyncStates = dataRepository.getGithubSyncStates().toImmutableMap(),
+                    githubPendingCount = dataRepository.getPendingGithubCount(),
+                )
+            }
+        }
+    }
+
     private fun onToggleSms(enabled: Boolean) {
         if (enabled && !dataRepository.hasSmsPermission()) {
             // Ask for the OS permission first; only flip the toggle on if it's granted.
@@ -830,6 +875,17 @@ class SettingsViewModel(
                         emailAccounts = dataRepository.getEmailAccounts().toImmutableList(),
                         emailSyncStates = dataRepository.getEmailSyncStates().toImmutableMap(),
                         emailPendingCount = dataRepository.getPendingEmailCount(),
+                    )
+                }
+            }
+
+            is PendingDeletion.GithubAccount -> {
+                dataRepository.removeGithubAccount(deletion.id)
+                _state.update {
+                    it.copy(
+                        githubAccounts = dataRepository.getGithubAccounts().toImmutableList(),
+                        githubSyncStates = dataRepository.getGithubSyncStates().toImmutableMap(),
+                        githubPendingCount = dataRepository.getPendingGithubCount(),
                     )
                 }
             }

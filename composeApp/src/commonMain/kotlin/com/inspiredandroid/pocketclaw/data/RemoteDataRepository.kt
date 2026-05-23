@@ -10,6 +10,7 @@ import com.inspiredandroid.pocketclaw.data.providers.buildOpenAIMessages
 import com.inspiredandroid.pocketclaw.email.EmailPoller
 import com.inspiredandroid.pocketclaw.formatFileSize
 import com.inspiredandroid.pocketclaw.getAvailableTools
+import com.inspiredandroid.pocketclaw.github.GithubPoller
 import com.inspiredandroid.pocketclaw.getPlatformToolDefinitions
 import com.inspiredandroid.pocketclaw.inference.DownloadError
 import com.inspiredandroid.pocketclaw.inference.DownloadedModel
@@ -152,6 +153,8 @@ class RemoteDataRepository(
     private val heartbeatManager: HeartbeatManager,
     private val emailStore: EmailStore,
     private val emailPoller: EmailPoller,
+    private val githubStore: GithubStore,
+    private val githubPoller: GithubPoller,
     private val smsStore: SmsStore,
     private val smsPoller: SmsPoller,
     private val smsReader: SmsReader,
@@ -1734,6 +1737,33 @@ class RemoteDataRepository(
 
     override fun setEmailPollIntervalMinutes(minutes: Int) {
         appSettings.setEmailPollIntervalMinutes(minutes)
+    }
+
+    override fun isGithubEnabled(): Boolean = appSettings.isGithubEnabled()
+
+    override fun setGithubEnabled(enabled: Boolean) {
+        appSettings.setGithubEnabled(enabled)
+    }
+
+    override fun getGithubAccounts(): List<GithubAccount> = githubStore.getAccounts()
+
+    override suspend fun removeGithubAccount(id: String) {
+        githubStore.removeAccount(id)
+    }
+
+    override fun getGithubPollIntervalMinutes(): Int = appSettings.getGithubPollIntervalMinutes()
+
+    override fun setGithubPollIntervalMinutes(minutes: Int) {
+        appSettings.setGithubPollIntervalMinutes(minutes)
+    }
+
+    override fun getPendingGithubCount(): Int = githubStore.getPending().size
+
+    override fun getGithubSyncStates(): Map<String, GithubSyncState> = githubStore.getAllSyncStates()
+
+    override suspend fun pollGithubAccount(accountId: String) {
+        val account = githubStore.getAccount(accountId) ?: return
+        githubPoller.poll(account)
     }
 
     override fun isSmsEnabled(): Boolean = appSettings.isSmsEnabled()

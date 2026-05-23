@@ -23,6 +23,7 @@ enum class ImportSection {
     SCHEDULING,
     HEARTBEAT,
     EMAIL,
+    GITHUB,
     SMS,
     SPLINTERLANDS,
     TOOLS,
@@ -408,6 +409,47 @@ class AppSettings(internal val settings: Settings) {
         settings.putString(KEY_EMAIL_PENDING, json)
     }
 
+    // GitHub
+    fun isGithubEnabled(): Boolean = settings.getBoolean(KEY_GITHUB_ENABLED, true)
+
+    fun setGithubEnabled(enabled: Boolean) {
+        settings.putBoolean(KEY_GITHUB_ENABLED, enabled)
+    }
+
+    fun getGithubAccountsJson(): String = settings.getString(KEY_GITHUB_ACCOUNTS, "")
+
+    fun setGithubAccountsJson(json: String) {
+        settings.putString(KEY_GITHUB_ACCOUNTS, json)
+    }
+
+    fun getGithubToken(accountId: String): String = settings.getString("${KEY_GITHUB_TOKEN_PREFIX}$accountId", "")
+
+    fun setGithubToken(accountId: String, token: String) {
+        settings.putString("${KEY_GITHUB_TOKEN_PREFIX}$accountId", token)
+    }
+
+    fun removeGithubToken(accountId: String) {
+        settings.remove("${KEY_GITHUB_TOKEN_PREFIX}$accountId")
+    }
+
+    fun getGithubSyncStateJson(accountId: String): String = settings.getString("${KEY_GITHUB_SYNC_PREFIX}$accountId", "")
+
+    fun setGithubSyncStateJson(accountId: String, json: String) {
+        settings.putString("${KEY_GITHUB_SYNC_PREFIX}$accountId", json)
+    }
+
+    fun getGithubPollIntervalMinutes(): Int = settings.getInt(KEY_GITHUB_POLL_INTERVAL, 15)
+
+    fun setGithubPollIntervalMinutes(minutes: Int) {
+        settings.putInt(KEY_GITHUB_POLL_INTERVAL, minutes)
+    }
+
+    fun getGithubPendingJson(): String = settings.getString(KEY_GITHUB_PENDING, "")
+
+    fun setGithubPendingJson(json: String) {
+        settings.putString(KEY_GITHUB_PENDING, json)
+    }
+
     // SMS (FOSS-only, Android-only — settings layer is platform-agnostic, feature gate
     // is enforced by the READ_SMS permission being declared only in foss/AndroidManifest.xml)
     fun isSmsEnabled(): Boolean = settings.getBoolean(KEY_SMS_ENABLED, false)
@@ -550,6 +592,13 @@ class AppSettings(internal val settings: Settings) {
         const val KEY_EMAIL_SYNC_PREFIX = "email_sync_"
         const val KEY_EMAIL_POLL_INTERVAL = "email_poll_interval"
         const val KEY_EMAIL_PENDING = "email_pending"
+
+        const val KEY_GITHUB_ENABLED = "github_enabled"
+        const val KEY_GITHUB_ACCOUNTS = "github_accounts"
+        const val KEY_GITHUB_TOKEN_PREFIX = "github_token_"
+        const val KEY_GITHUB_SYNC_PREFIX = "github_sync_"
+        const val KEY_GITHUB_POLL_INTERVAL = "github_poll_interval"
+        const val KEY_GITHUB_PENDING = "github_pending"
 
         const val KEY_SMS_ENABLED = "sms_enabled"
         const val KEY_SMS_POLL_INTERVAL = "sms_poll_interval"

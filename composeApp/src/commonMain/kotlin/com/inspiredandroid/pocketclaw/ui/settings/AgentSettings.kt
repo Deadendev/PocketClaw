@@ -161,6 +161,22 @@ internal fun AgentContent(uiState: SettingsUiState, actions: SettingsActions) {
                             )
                         }
                     }
+                    if (uiState.showGithubToggle) {
+                        SettingsCard {
+                            GithubSection(
+                                isGithubEnabled = uiState.isGithubEnabled,
+                                githubAccounts = uiState.githubAccounts,
+                                pollIntervalMinutes = uiState.githubPollIntervalMinutes,
+                                pendingCount = uiState.githubPendingCount,
+                                syncStates = uiState.githubSyncStates,
+                                refreshingAccountIds = uiState.refreshingGithubAccountIds,
+                                onToggleGithub = actions.onToggleGithub,
+                                onRemoveAccount = actions.onRemoveGithubAccount,
+                                onChangePollInterval = actions.onChangeGithubPollInterval,
+                                onRefreshAccount = actions.onRefreshGithubAccount,
+                            )
+                        }
+                    }
                     if (uiState.showSmsSection) {
                         SettingsCard {
                             SmsSection(
@@ -252,6 +268,22 @@ internal fun AgentContent(uiState: SettingsUiState, actions: SettingsActions) {
                             onRemoveAccount = actions.onRemoveEmailAccount,
                             onChangePollInterval = actions.onChangeEmailPollInterval,
                             onRefreshAccount = actions.onRefreshEmailAccount,
+                        )
+                    }
+                }
+                if (uiState.showGithubToggle) {
+                    SettingsCard {
+                        GithubSection(
+                            isGithubEnabled = uiState.isGithubEnabled,
+                            githubAccounts = uiState.githubAccounts,
+                            pollIntervalMinutes = uiState.githubPollIntervalMinutes,
+                            pendingCount = uiState.githubPendingCount,
+                            syncStates = uiState.githubSyncStates,
+                            refreshingAccountIds = uiState.refreshingGithubAccountIds,
+                            onToggleGithub = actions.onToggleGithub,
+                            onRemoveAccount = actions.onRemoveGithubAccount,
+                            onChangePollInterval = actions.onChangeGithubPollInterval,
+                            onRefreshAccount = actions.onRefreshGithubAccount,
                         )
                     }
                 }

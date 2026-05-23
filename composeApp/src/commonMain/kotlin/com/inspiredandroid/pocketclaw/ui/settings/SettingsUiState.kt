@@ -3,6 +3,8 @@ package com.inspiredandroid.pocketclaw.ui.settings
 import androidx.compose.runtime.Immutable
 import com.inspiredandroid.pocketclaw.data.EmailAccount
 import com.inspiredandroid.pocketclaw.data.EmailSyncState
+import com.inspiredandroid.pocketclaw.data.GithubAccount
+import com.inspiredandroid.pocketclaw.data.GithubSyncState
 import com.inspiredandroid.pocketclaw.data.HeartbeatLogEntry
 import com.inspiredandroid.pocketclaw.data.MemoryEntry
 import com.inspiredandroid.pocketclaw.data.ScheduledTask
@@ -85,6 +87,13 @@ data class SettingsUiState(
     val emailPendingCount: Int = 0,
     val emailSyncStates: ImmutableMap<String, EmailSyncState> = persistentMapOf(),
     val refreshingEmailAccountIds: ImmutableSet<String> = persistentSetOf(),
+    val isGithubEnabled: Boolean = true,
+    val showGithubToggle: Boolean = false,
+    val githubAccounts: ImmutableList<GithubAccount> = persistentListOf(),
+    val githubPollIntervalMinutes: Int = 15,
+    val githubPendingCount: Int = 0,
+    val githubSyncStates: ImmutableMap<String, GithubSyncState> = persistentMapOf(),
+    val refreshingGithubAccountIds: ImmutableSet<String> = persistentSetOf(),
     val showSmsSection: Boolean = false,
     val isSmsEnabled: Boolean = false,
     val smsPermissionGranted: Boolean = false,
@@ -137,6 +146,7 @@ sealed interface PendingDeletion {
     data class Memory(val key: String) : PendingDeletion
     data class Task(val id: String) : PendingDeletion
     data class EmailAccount(val id: String) : PendingDeletion
+    data class GithubAccount(val id: String) : PendingDeletion
     data class Service(val instanceId: String) : PendingDeletion
     data class McpServer(val serverId: String) : PendingDeletion
 }

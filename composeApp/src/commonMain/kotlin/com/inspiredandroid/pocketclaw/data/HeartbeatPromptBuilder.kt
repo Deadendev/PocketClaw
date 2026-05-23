@@ -16,6 +16,16 @@ internal data class HeartbeatPendingEmail(
     val preview: String,
 )
 
+/** A pending GitHub notification rendered into the `## New GitHub Activity` section. */
+internal data class HeartbeatPendingGithub(
+    val accountLogin: String,
+    val repo: String,
+    val type: String,
+    val reason: String,
+    val title: String,
+    val subjectUrl: String,
+)
+
 /** A pending (polled-but-not-yet-heartbeat-picked-up) SMS rendered into the `## New SMS` section. */
 internal data class HeartbeatPendingSms(
     val id: Long,
@@ -61,6 +71,7 @@ internal fun buildHeartbeatPrompt(
     pendingEmails: List<HeartbeatPendingEmail>,
     pendingSms: List<HeartbeatPendingSms>,
     pendingNotifications: List<HeartbeatPendingNotification>,
+    pendingGithub: List<HeartbeatPendingGithub> = emptyList(),
     promotionCandidates: List<HeartbeatPromotionCandidate>,
 ): String = buildString {
     append(customOrDefaultPrompt)
@@ -179,6 +190,28 @@ internal fun buildHeartbeatPrompt(
             if (notif.preview.isNotBlank()) {
                 append(": ")
                 append(notif.preview)
+            }
+            append('\n')
+        }
+    }
+
+    if (pendingGithub.isNotEmpty()) {
+        append("\n## New GitHub Activity\n")
+        append("Issues, pull requests, and mentions surfaced via GitHub notifications since the last heartbeat. Use `get_github_issue` / `get_github_pr` / `comment_github` to act on items that need attention.\n")
+        for (item in pendingGithub) {
+            append("- **")
+            append(item.title.ifBlank { "(no title)" })
+            append("** — ")
+            append(item.type)
+            append(" in ")
+            append(item.repo)
+            append(" (")
+            append(item.reason)
+            append(")")
+            if (item.subjectUrl.isNotBlank()) {
+                append(" [")
+                append(item.subjectUrl)
+                append("]")
             }
             append('\n')
         }
