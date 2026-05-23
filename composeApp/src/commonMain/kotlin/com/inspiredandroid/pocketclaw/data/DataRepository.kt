@@ -134,6 +134,7 @@ interface DataRepository {
     fun isGithubEnabled(): Boolean
     fun setGithubEnabled(enabled: Boolean)
     fun getGithubAccounts(): List<GithubAccount>
+    suspend fun addGithubAccount(login: String, token: String, apiBaseUrl: String)
     suspend fun removeGithubAccount(id: String)
     fun getGithubPollIntervalMinutes(): Int
     fun setGithubPollIntervalMinutes(minutes: Int)

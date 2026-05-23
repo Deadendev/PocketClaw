@@ -163,6 +163,7 @@ class SettingsViewModel(
         onChangeEmailPollInterval = ::onChangeEmailPollInterval,
         onRefreshEmailAccount = ::onRefreshEmailAccount,
         onToggleGithub = ::onToggleGithub,
+        onAddGithubAccount = ::onAddGithubAccount,
         onRemoveGithubAccount = ::onRemoveGithubAccount,
         onChangeGithubPollInterval = ::onChangeGithubPollInterval,
         onRefreshGithubAccount = ::onRefreshGithubAccount,
@@ -544,6 +545,18 @@ class SettingsViewModel(
     private fun onToggleGithub(enabled: Boolean) {
         dataRepository.setGithubEnabled(enabled)
         _state.update { it.copy(isGithubEnabled = enabled) }
+    }
+
+    private fun onAddGithubAccount(login: String, token: String, apiBaseUrl: String) {
+        viewModelScope.launch(backgroundDispatcher) {
+            dataRepository.addGithubAccount(login, token, apiBaseUrl)
+            _state.update {
+                it.copy(
+                    githubAccounts = dataRepository.getGithubAccounts().toImmutableList(),
+                    githubSyncStates = dataRepository.getGithubSyncStates().toImmutableMap(),
+                )
+            }
+        }
     }
 
     private fun onRemoveGithubAccount(id: String) {

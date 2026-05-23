@@ -1747,6 +1747,23 @@ class RemoteDataRepository(
 
     override fun getGithubAccounts(): List<GithubAccount> = githubStore.getAccounts()
 
+    override suspend fun addGithubAccount(login: String, token: String, apiBaseUrl: String) {
+        val accountId = kotlin.uuid.Uuid.random().toString()
+        val webBaseUrl = when {
+            apiBaseUrl.contains("api.github.com", ignoreCase = true) -> "https://github.com"
+            apiBaseUrl.trimEnd('/').endsWith("/api/v3") -> apiBaseUrl.trimEnd('/').removeSuffix("/api/v3")
+            else -> apiBaseUrl.trimEnd('/')
+        }
+        val account = GithubAccount(
+            id = accountId,
+            login = login,
+            apiBaseUrl = apiBaseUrl,
+            webBaseUrl = webBaseUrl,
+        )
+        githubStore.addAccount(account)
+        githubStore.setToken(accountId, token)
+    }
+
     override suspend fun removeGithubAccount(id: String) {
         githubStore.removeAccount(id)
     }
