@@ -276,6 +276,7 @@ import pocketclaw.composeapp.generated.resources.settings_tools_none_available
 import pocketclaw.composeapp.generated.resources.settings_ui_scale
 import pocketclaw.composeapp.generated.resources.settings_version
 import pocketclaw.composeapp.generated.resources.snackbar_email_removed
+import pocketclaw.composeapp.generated.resources.snackbar_github_removed
 import pocketclaw.composeapp.generated.resources.snackbar_mcp_server_removed
 import pocketclaw.composeapp.generated.resources.snackbar_memory_deleted
 import pocketclaw.composeapp.generated.resources.snackbar_service_removed

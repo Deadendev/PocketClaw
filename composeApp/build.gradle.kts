@@ -33,10 +33,6 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
-            kotlin.srcDir(layout.buildDirectory.dir("generated/src/commonMain/kotlin"))
-        }
-
         val androidMain by getting {
             kotlin.srcDir("src/jvmShared/kotlin")
         }
@@ -96,29 +92,8 @@ kotlin {
     }
 }
 
-class VersionGeneratorPlugin : Plugin<Project> {
-    override fun apply(project: Project) {
-        project.afterEvaluate {
-            val appVersion = libs.versions.appVersion.get()
-
-            // Generate Kotlin version file
-            val versionFile =
-                layout.buildDirectory
-                    .file("generated/src/commonMain/kotlin/com/inspiredandroid/pocketclaw/Version.kt")
-                    .get()
-                    .asFile
-            versionFile.parentFile?.mkdirs()
-            versionFile.writeText(
-                """
-                package com.inspiredandroid.pocketclaw
-
-                object Version {
-                    const val appVersion = "$appVersion"
-                }
-                """.trimIndent(),
-            )
-        }
-    }
-}
-
-apply<VersionGeneratorPlugin>()
+// `Version.kt` is now checked in at
+// composeApp/src/commonMain/kotlin/com/inspiredandroid/pocketclaw/Version.kt
+// because generating it at configuration time made it disappear under `gradlew clean`
+// (the file was written during configuration, then deleted by clean before compileAndroidMain
+// could read it). Bumping the version here also bumps it in libs.versions.toml.

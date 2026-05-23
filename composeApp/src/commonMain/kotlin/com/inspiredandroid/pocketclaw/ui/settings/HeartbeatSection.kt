@@ -59,6 +59,16 @@ import pocketclaw.composeapp.generated.resources.settings_email_poll_never
 import pocketclaw.composeapp.generated.resources.settings_email_queued
 import pocketclaw.composeapp.generated.resources.settings_email_refresh
 import pocketclaw.composeapp.generated.resources.settings_email_remove
+import pocketclaw.composeapp.generated.resources.settings_github
+import pocketclaw.composeapp.generated.resources.settings_github_description
+import pocketclaw.composeapp.generated.resources.settings_github_empty
+import pocketclaw.composeapp.generated.resources.settings_github_last_poll
+import pocketclaw.composeapp.generated.resources.settings_github_poll_failed
+import pocketclaw.composeapp.generated.resources.settings_github_poll_interval
+import pocketclaw.composeapp.generated.resources.settings_github_poll_never
+import pocketclaw.composeapp.generated.resources.settings_github_queued
+import pocketclaw.composeapp.generated.resources.settings_github_refresh
+import pocketclaw.composeapp.generated.resources.settings_github_remove
 import pocketclaw.composeapp.generated.resources.settings_heartbeat
 import pocketclaw.composeapp.generated.resources.settings_heartbeat_active_hours
 import pocketclaw.composeapp.generated.resources.settings_heartbeat_default_prompt
