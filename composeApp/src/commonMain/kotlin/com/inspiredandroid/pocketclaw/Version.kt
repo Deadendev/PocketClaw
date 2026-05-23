@@ -7,5 +7,5 @@ package com.inspiredandroid.pocketclaw
  * Kept in sync with `appVersion` in `gradle/libs.versions.toml` whenever the version is bumped.
  */
 object Version {
-    const val appVersion = "2.6.2"
+    const val APP_VERSION = "2.6.2"
 }

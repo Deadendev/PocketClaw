@@ -604,7 +604,7 @@ private fun BottomInfo() {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            stringResource(Res.string.settings_version, Version.appVersion),
+            stringResource(Res.string.settings_version, Version.APP_VERSION),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground,
         )

@@ -70,7 +70,7 @@ class Requests {
             )
         }
         install(UserAgent) {
-            agent = "PocketClaw/${Version.appVersion} (${currentPlatform.displayName})"
+            agent = "PocketClaw/${Version.APP_VERSION} (${currentPlatform.displayName})"
         }
         install(HttpTimeout) {
             requestTimeoutMillis = 60.seconds.inWholeMilliseconds
