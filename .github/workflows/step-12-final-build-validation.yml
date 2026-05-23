@@ -1,0 +1,208 @@
+name: Step 12 Final Build Validation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  validate:
+    name: Validate And Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradle executable
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x ./gradlew
+
+      - name: Show project structure
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "===== ROOT FILES ====="
+          ls -la
+
+          echo "===== WORKFLOWS ====="
+          find .github/workflows -maxdepth 1 -type f | sort || true
+
+          echo "===== ANDROID SOURCE ====="
+          find app/src/main/java/com/mrrobot/aiworkspace -type f | sort
+
+      - name: Validate required files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          REQUIRED_FILES=(
+            "settings.gradle.kts"
+            "build.gradle.kts"
+            "gradle.properties"
+            "gradlew"
+            "app/build.gradle.kts"
+            "app/src/main/AndroidManifest.xml"
+            "app/src/main/java/com/mrrobot/aiworkspace/MainActivity.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/navigation/AppNavGraph.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/ui/components/UiComponents.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/ui/theme/Theme.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/WelcomeScreen.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/ChatScreen.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/AgentsScreen.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/SkillsScreen.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/SandboxScreen.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/MarketplaceScreen.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/SettingsScreen.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/ui/screens/ProfileScreen.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/data/SettingsStore.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/data/ChatRepository.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/data/AiModels.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/data/Agent.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/data/SkillStore.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/sandbox/SandboxManager.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/sandbox/ProotExecutor.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/sandbox/SandboxShell.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/data/MarketplaceModels.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/data/ProfileModels.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/viewmodel/SettingsViewModel.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/viewmodel/ChatViewModel.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/viewmodel/AgentsViewModel.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/viewmodel/SkillsViewModel.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/viewmodel/SandboxViewModel.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/viewmodel/MarketplaceViewModel.kt"
+            "app/src/main/java/com/mrrobot/aiworkspace/viewmodel/ProfileViewModel.kt"
+          )
+
+          missing=0
+
+          for file in "${REQUIRED_FILES[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "MISSING: $file"
+              missing=1
+            else
+              echo "OK: $file"
+            fi
+          done
+
+          if [ "$missing" -eq 1 ]; then
+            echo "Validation failed: missing required files."
+            exit 1
+          fi
+
+          echo "All required files exist."
+
+      - name: Run Gradle project validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew projects --stacktrace 2>&1 | tee gradle-projects-log.txt
+
+      - name: Run Gradle dependency insight
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew :app:dependencies --configuration debugRuntimeClasspath 2>&1 | tee gradle-dependencies-log.txt
+
+      - name: Build Debug APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew clean assembleDebug --stacktrace --info 2>&1 | tee build-log.txt
+
+      - name: Verify APK exists
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          APK_DIR="app/build/outputs/apk/debug"
+
+          if [ ! -d "$APK_DIR" ]; then
+            echo "APK directory does not exist: $APK_DIR"
+            exit 1
+          fi
+
+          APK_COUNT=$(find "$APK_DIR" -name "*.apk" | wc -l | tr -d ' ')
+
+          if [ "$APK_COUNT" -eq 0 ]; then
+            echo "No APK was produced."
+            echo "Contents of app/build/outputs:"
+            find app/build/outputs -maxdepth 5 -type f | sort || true
+            exit 1
+          fi
+
+          echo "APK files found:"
+          find "$APK_DIR" -name "*.apk" -print
+
+      - name: Create validation summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "# Mr. Robot AI Workspace Final Validation"
+            echo
+            echo "## Project"
+            echo "- Package: com.mrrobot.aiworkspace"
+            echo "- Stack: Kotlin, Jetpack Compose, Material 3, MVVM, DataStore, OpenRouter, GitHub Actions"
+            echo
+            echo "## Included Systems"
+            echo "- Welcome dashboard"
+            echo "- OpenRouter chat"
+            echo "- Persistent settings"
+            echo "- Auto / Dark / Light theme modes"
+            echo "- Model selector"
+            echo "- Agent system"
+            echo "- Skills (multi-skill management)"
+            echo "- Terminal logs"
+            echo "- File manager"
+            echo "- Marketplace"
+            echo "- Profile workspace identity"
+            echo "- Premium cyberpunk UI"
+            echo
+            echo "## APK Output"
+            echo "\`\`\`text"
+            find app/build/outputs/apk -type f -name "*.apk" 2>/dev/null || true
+            echo "\`\`\`"
+            echo
+            echo "## Source File Count"
+            echo "\`\`\`text"
+            find app/src/main/java/com/mrrobot/aiworkspace -type f | wc -l
+            echo "\`\`\`"
+          } > VALIDATION_SUMMARY.md
+
+      - name: Upload validation logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: final-validation-logs
+          path: |
+            build-log.txt
+            gradle-projects-log.txt
+            gradle-dependencies-log.txt
+            VALIDATION_SUMMARY.md
+
+      - name: Upload final APK
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: mr-robot-ai-workspace-final-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
