@@ -42,11 +42,20 @@ jobs:
       - name: Set execution flag for gradlew
         run: chmod +x gradlew
 
+      - name: Prepare gradle log directory
+        run: mkdir -p gradle-logs
+
       - name: Run spotlessApply
-        run: ./gradlew spotlessApply --no-daemon --stacktrace
+        shell: bash
+        run: |
+          set -o pipefail
+          ./gradlew spotlessApply --no-daemon --stacktrace --console=plain --warning-mode=all 2>&1 | tee gradle-logs/spotless.log
 
       - name: Assemble Foss Debug APK
-        run: ./gradlew :androidApp:assembleFossDebug --no-daemon --stacktrace
+        shell: bash
+        run: |
+          set -o pipefail
+          ./gradlew :androidApp:assembleFossDebug --no-daemon --stacktrace --console=plain --warning-mode=all 2>&1 | tee gradle-logs/assemble-foss-debug.log
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
@@ -62,7 +71,10 @@ jobs:
         with:
           name: build-logs-${{ github.sha }}
           path: |
+            gradle-logs/
             **/build/reports/
             **/build/outputs/logs/
+            **/build/kotlin/
+            **/build/tmp/kotlin-classes/*.txt
           if-no-files-found: ignore
           retention-days: 14

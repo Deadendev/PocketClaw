@@ -31,8 +31,13 @@ jobs:
         run: |
           sdkmanager "build-tools;36.0.0"
           sdkmanager "build-tools;29.0.3"
+      - name: Prepare gradle log directory
+        run: mkdir -p gradle-logs
       - name: Build APK
-        run: bash ./gradlew :androidApp:assembleFossRelease --stacktrace
+        shell: bash
+        run: |
+          set -o pipefail
+          bash ./gradlew :androidApp:assembleFossRelease --stacktrace --console=plain --warning-mode=all 2>&1 | tee gradle-logs/assemble-foss-release.log
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
         with:
@@ -53,8 +58,11 @@ jobs:
         with:
           name: release-build-logs
           path: |
+            gradle-logs/
             **/build/reports/
             **/build/outputs/logs/
+            **/build/kotlin/
+            **/build/tmp/kotlin-classes/*.txt
           if-no-files-found: ignore
           retention-days: 14
 
