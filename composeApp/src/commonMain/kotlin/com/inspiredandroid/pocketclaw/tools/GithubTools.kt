@@ -118,6 +118,26 @@ object GithubTools {
             val webBaseUrl = (args["web_base_url"] as? String)?.trim()?.ifEmpty { null }
                 ?: deriveWebBase(apiBaseUrl)
 
+            // Front-line shape check on github.com tokens. Catches the common case where the
+            // chat model truncated/mangled the token before it reached the tool — those bogus
+            // tokens never even need a network round-trip to fail. We don't validate GitHub
+            // Enterprise tokens here because GHE installations sometimes issue tokens with
+            // bespoke prefixes.
+            val isGithubCom = apiBaseUrl.contains("api.github.com", ignoreCase = true)
+            if (isGithubCom) {
+                val knownPrefixes = listOf("ghp_", "github_pat_", "gho_", "ghu_", "ghs_", "ghr_")
+                val hasPrefix = knownPrefixes.any { token.startsWith(it) }
+                if (!hasPrefix || token.length < 30) {
+                    return mapOf(
+                        "success" to false,
+                        "error" to "Token does not look like a GitHub PAT (${tokenFingerprint(token)}). " +
+                            "Classic tokens start with 'ghp_', fine-grained tokens with 'github_pat_'. " +
+                            "If your token is correct, the chat model may have truncated or modified it " +
+                            "in transit — try re-pasting it as the entire message, or generate a new token.",
+                    )
+                }
+            }
+
             val client = GithubClient(apiBaseUrl, token)
             return try {
                 val user = client.getAuthenticatedUser()
@@ -138,11 +158,34 @@ object GithubTools {
                     "message" to "Connected GitHub account ${user.login}.",
                 )
             } catch (e: Exception) {
-                mapOf("success" to false, "error" to "Auth failed: ${e.message}")
+                // Include a redacted token fingerprint so the error makes it possible to tell
+                // whether the token actually arrived intact at the tool — vs. being mangled by
+                // the chat model on the way in.
+                mapOf(
+                    "success" to false,
+                    "error" to "Auth failed: ${e.message} (${tokenFingerprint(token)})",
+                )
             } finally {
                 client.close()
             }
         }
+    }
+
+    /**
+     * Redacts a token to a short, safe-to-display fingerprint of the form
+     * `prefix=ghp_xxxx,len=40` so error messages can show enough to diagnose mangling
+     * without leaking the actual secret. Only the first 4 chars after a known prefix
+     * (or the first 4 chars overall) are shown.
+     */
+    private fun tokenFingerprint(token: String): String {
+        val knownPrefixes = listOf("github_pat_", "ghp_", "gho_", "ghu_", "ghs_", "ghr_")
+        val matched = knownPrefixes.firstOrNull { token.startsWith(it) }
+        val visible = if (matched != null) {
+            matched + token.substring(matched.length).take(4) + "…"
+        } else {
+            token.take(4) + "…"
+        }
+        return "prefix=$visible, len=${token.length}"
     }
 
     fun listReposTool(store: GithubStore) = object : Tool {

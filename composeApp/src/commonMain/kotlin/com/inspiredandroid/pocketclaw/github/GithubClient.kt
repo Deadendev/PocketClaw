@@ -82,14 +82,36 @@ class GithubClient(
         null
     }
 
-    /** Fetch the authenticated user — used by `setup_github` to validate the token. */
-    suspend fun getAuthenticatedUser(): GithubUserDto = authed { tk, base ->
-        client.get("$base/user") {
-            header("Authorization", "Bearer $tk")
-            header("Accept", "application/vnd.github+json")
-            header("X-GitHub-Api-Version", "2022-11-28")
+    /**
+     * Fetch the authenticated user — used by `setup_github` to validate the token.
+     *
+     * Tries `Authorization: Bearer <token>` first (current GitHub recommendation) and, if that
+     * comes back 401, retries once with the legacy `Authorization: token <token>` header.
+     * Both forms work against api.github.com, but a few older GitHub Enterprise Server installs
+     * only accept the legacy form. The fallback turns "this works in curl but the app says
+     * Bad credentials" into "the app just works".
+     */
+    suspend fun getAuthenticatedUser(): GithubUserDto {
+        val bearer = authed { tk, base ->
+            client.get("$base/user") {
+                header("Authorization", "Bearer $tk")
+                header("Accept", "application/vnd.github+json")
+                header("X-GitHub-Api-Version", "2022-11-28")
+            }
         }
-    }.expect()
+        if (bearer.status.isSuccess()) return bearer.body()
+        if (bearer.status.value != 401) throw mapError(bearer.status, bearer.bodyAsText())
+
+        // 401 with Bearer — retry with legacy `token` scheme before giving up.
+        val legacy = authed { tk, base ->
+            client.get("$base/user") {
+                header("Authorization", "token $tk")
+                header("Accept", "application/vnd.github+json")
+                header("X-GitHub-Api-Version", "2022-11-28")
+            }
+        }
+        return legacy.expect()
+    }
 
     suspend fun listRepos(visibility: String? = null, perPage: Int = 30, page: Int = 1): List<GithubRepoDto> = authed { tk, base ->
         client.get("$base/user/repos") {
