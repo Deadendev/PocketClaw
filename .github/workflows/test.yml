@@ -55,3 +55,14 @@ jobs:
           path: androidApp/build/outputs/apk/foss/debug/*.apk
           if-no-files-found: error
           retention-days: 30
+
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs-${{ github.sha }}
+          path: |
+            **/build/reports/
+            **/build/outputs/logs/
+          if-no-files-found: ignore
+          retention-days: 14
