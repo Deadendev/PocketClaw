@@ -381,6 +381,7 @@ class GithubClient(
             ignoreUnknownKeys = true
             isLenient = true
             explicitNulls = false
+            coerceInputValues = true
         }
     }
 }
