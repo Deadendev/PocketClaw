@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -42,6 +43,7 @@ import com.inspiredandroid.pocketclaw.data.EmailSyncState
 import com.inspiredandroid.pocketclaw.data.HeartbeatLogEntry
 import com.inspiredandroid.pocketclaw.data.ServiceEntry
 import com.inspiredandroid.pocketclaw.data.SmsSyncState
+import com.inspiredandroid.pocketclaw.github.GithubAddAccountDialog
 import com.inspiredandroid.pocketclaw.ui.PocketClawOutlinedTextField
 import com.inspiredandroid.pocketclaw.ui.components.PocketClawRangeSlider
 import com.inspiredandroid.pocketclaw.ui.components.PocketClawSlider
@@ -859,8 +861,6 @@ private fun PresetSlider(
     )
 }
 
-
-
 @Composable
 internal fun GithubSection(
     isGithubEnabled: Boolean,
@@ -873,7 +873,20 @@ internal fun GithubSection(
     onRemoveAccount: (String) -> Unit,
     onChangePollInterval: (Int) -> Unit,
     onRefreshAccount: (String) -> Unit,
+    onAddAccount: (String, String, String) -> Unit = { _, _, _ -> },
 ) {
+    var showAddDialog by remember { mutableStateOf(false) }
+
+    if (showAddDialog) {
+        GithubAddAccountDialog(
+            onDismiss = { showAddDialog = false },
+            onAccountAdded = { login, token, apiBaseUrl ->
+                onAddAccount(login, token, apiBaseUrl)
+                showAddDialog = false
+            },
+        )
+    }
+
     Column(modifier = Modifier.fillMaxWidth()) {
         ToggleableHeadline(
             title = org.jetbrains.compose.resources.stringResource(pocketclaw.composeapp.generated.resources.Res.string.settings_github),
@@ -886,11 +899,29 @@ internal fun GithubSection(
             Spacer(Modifier.height(12.dp))
 
             if (githubAccounts.isEmpty()) {
-                Text(
-                    text = org.jetbrains.compose.resources.stringResource(pocketclaw.composeapp.generated.resources.Res.string.settings_github_empty),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = CenterHorizontally,
+                ) {
+                    Text(
+                        text = org.jetbrains.compose.resources.stringResource(pocketclaw.composeapp.generated.resources.Res.string.settings_github_empty),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Button(
+                        onClick = { showAddDialog = true },
+                        modifier = Modifier.handCursor(),
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text("Connect GitHub Account")
+                    }
+                }
             } else {
                 if (pendingCount > 0) {
                     Text(
@@ -911,6 +942,32 @@ internal fun GithubSection(
                 )
 
                 Spacer(Modifier.height(12.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Accounts",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                    Button(
+                        onClick = { showAddDialog = true },
+                        modifier = Modifier.handCursor(),
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text("Add", style = MaterialTheme.typography.labelSmall)
+                    }
+                }
+
+                Spacer(Modifier.height(8.dp))
 
                 val nowMs = remember(syncStates) { kotlin.time.Clock.System.now().toEpochMilliseconds() }
                 for (account in githubAccounts) {
