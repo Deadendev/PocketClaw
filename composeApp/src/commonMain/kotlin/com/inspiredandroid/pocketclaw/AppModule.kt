@@ -17,6 +17,7 @@ import com.inspiredandroid.pocketclaw.data.ToolExecutor
 import com.inspiredandroid.pocketclaw.data.runMigrations
 import com.inspiredandroid.pocketclaw.email.EmailPoller
 import com.inspiredandroid.pocketclaw.github.GithubPoller
+import com.inspiredandroid.pocketclaw.github.GithubProjectManager
 import com.inspiredandroid.pocketclaw.inference.createLocalInferenceEngine
 import com.inspiredandroid.pocketclaw.mcp.McpServerManager
 import com.inspiredandroid.pocketclaw.network.Requests
@@ -82,6 +83,9 @@ val appModule = module {
     }
     single<GithubPoller> {
         GithubPoller(get<GithubStore>())
+    }
+    single<GithubProjectManager> {
+        GithubProjectManager(get<GithubStore>())
     }
     single<SmsStore> {
         SmsStore(get())
