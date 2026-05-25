@@ -1,9 +1,1 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:enforceNavigationBarContrast">false</item>
-        <item name="android:enforceStatusBarContrast">false</item>
-    </style>
-</resources>
+<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<resources>\n    <style name=\"AppTheme\" parent=\"Theme.Material3.DayNight.NoActionBar\">\n        <item name=\"android:statusBarColor\">@android:color/transparent</item>\n        <item name=\"android:navigationBarColor\">@android:color/transparent</item>\n        <item name=\"android:enforceNavigationBarContrast\">false</item>\n        <item name=\"android:enforceStatusBarContrast\">false</item>\n        <item name=\"colorPrimary\">@color/emerald_500</item>\n        <item name=\"colorPrimaryVariant\">@color/emerald_500_20</item>\n        <item name=\"colorOnPrimary\">@color/emerald_500_80</item>\n    </style>\n</resources>
