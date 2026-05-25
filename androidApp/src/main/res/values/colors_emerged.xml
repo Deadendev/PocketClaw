@@ -1,1 +1,5 @@
-\"<resources>\\n    <color name=\\\"emerald_500\\\">#4CAF50</item>\\n    <color name=\\\"emerald_500_80\\\">#81C784</color>\\n    <color name=\\\"emerald_500_20\\\">#B2DFDB</color>\\n</resources>\""
+<resources>
+    <color name="emerald_500">#4CAF50</color>
+    <color name="emerald_500_80">#81C784</color>
+    <color name="emerald_500_20">#B2DFDB</color>
+</resources>
