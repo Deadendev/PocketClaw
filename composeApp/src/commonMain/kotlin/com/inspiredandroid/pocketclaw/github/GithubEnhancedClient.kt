@@ -72,7 +72,8 @@ class GithubEnhancedClient(
             val msg = (obj["message"] as? JsonPrimitive)?.content
             val errors = (obj["errors"] as? kotlinx.serialization.json.JsonArray)
                 ?.joinToString { (it as? JsonObject)?.get("message")?.toString() ?: it.toString() }
-            listOfNotNull(msg, errors?.takeIf { it.isNotBlank() }).joinToString(": ").ifblank { null }
+            val result = listOfNotNull(msg, errors?.takeIf { it.isNotEmpty() }).joinToString(": ")
+            result.takeIf { it.isNotEmpty() }
         }
     } catch (_: Exception) {
         null
@@ -493,6 +494,14 @@ data class GithubCodeSearchResultDto(
     val path: String,
     val repository: GithubRepoDto? = null,
     @SerialName("html_url") val htmlUrl: String = "",
+)
+
+@Serializable
+data class GithubMergeResultDto(
+    val sha: String? = null,
+    val merged: Boolean = false,
+    val message: String = "",
+    @SerialName("commit_title") val commitTitle: String? = null,
 )
 
 // ========== Reuse DTOs and Exceptions from GithubClient ==========
