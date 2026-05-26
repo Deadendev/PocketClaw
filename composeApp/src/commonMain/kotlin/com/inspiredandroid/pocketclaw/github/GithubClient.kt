@@ -525,6 +525,36 @@ data class GithubSearchResultDto<T>(
     val items: List<T> = emptyList(),
 )
 
+@Serializable
+data class GithubReleaseDto(
+    val id: Long,
+    @SerialName("tag_name") val tagName: String,
+    val name: String? = null,
+    val body: String? = null,
+    val draft: Boolean = false,
+    val prerelease: Boolean = false,
+    @SerialName("created_at") val createdAt: String = "",
+    @SerialName("published_at") val publishedAt: String? = null,
+    val author: GithubOwnerDto? = null,
+    val assets: List<GithubReleaseAssetDto> = emptyList(),
+)
+
+@Serializable
+data class GithubReleaseAssetDto(
+    val id: Long,
+    val name: String,
+    @SerialName("content_type") val contentType: String = "",
+    val size: Long = 0L,
+    @SerialName("download_count") val downloadCount: Int = 0,
+    @SerialName("browser_download_url") val browserDownloadUrl: String = "",
+)
+
+@Serializable
+data class GithubAuthorDto(
+    val name: String = "",
+    val email: String = "",
+)
+
 // endregion
 
 // region Exceptions
