@@ -504,5 +504,26 @@ data class GithubMergeResultDto(
     @SerialName("commit_title") val commitTitle: String? = null,
 )
 
+@Serializable
+data class GithubWorkflowRunsResponseDto(
+    @SerialName("total_count") val totalCount: Int = 0,
+    @SerialName("workflow_runs") val workflowRuns: List<GithubWorkflowRunDto> = emptyList(),
+)
+
+@Serializable
+data class GithubWorkflowRunDto(
+    val id: Long,
+    val name: String,
+    @SerialName("head_branch") val headBranch: String = "",
+    val status: String,
+    val conclusion: String? = null,
+    @SerialName("created_at") val createdAt: String = "",
+    @SerialName("updated_at") val updatedAt: String = "",
+    @SerialName("workflow_id") val workflowId: Long = 0L,
+    @SerialName("head_commit") val headCommit: GithubCommitDto? = null,
+    val actor: GithubOwnerDto? = null,
+    @SerialName("html_url") val htmlUrl: String = "",
+)
+
 // ========== Reuse DTOs and Exceptions from GithubClient ==========
 // All other DTOs and Exceptions are imported from GithubClient.kt
